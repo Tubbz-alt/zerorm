@@ -70,19 +70,28 @@ brianv .at. stanford.edu
         Application app_t = new Application();
         Process process_t = new Process();
         Select simpleJoin = appProcess_t(app_t, process_t);
-        System.out.println(app_process_t.formatted();
+        System.out.println(app_process_t.formatted());
         
         Select pid_1234 = appProcess_t(app_t, process_t)
-          .where(process_t.pid.eq(1234L);
-        System.out.println(pid_1234.formatted();
+          .where(process_t.pid.eq(1234L));
+        System.out.println(pid_1234.formatted());
         
         Param<Long> pidParam = p.pid.checkedParam( "pid");
         Select pid_x = appProcess_t(app_t, process_t)
-          .where(process_t.pid.eq(pidParam);
+          .where(process_t.pid.eq(pidParam));
         pidParam.setValue( 1234L );
         pidParam.setValue( 4321L );
-        System.out.println(pid_x.formatted();
+        System.out.println(pid_x.formatted());
+    }
+    
+    void runningApplications(){
+        ArrayList<String> rStates = new ArrayList<>();
+        rStates.add("RUNNING");
+        rStates.add("BUSY");
         
+        Select running = appProcess_t(app_t, process_t)
+          .where(process_t.status.in(rStates));
+        System.out.println(running.formatted());
     }
     
     Select app_process_join(Application app_t, Process process_t){
