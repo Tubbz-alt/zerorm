@@ -1,8 +1,9 @@
-ZeroRM
+0RM (aka zerorm)
 ======
-December 6, 2013  
-This is my first "open-sourced" library, but I work on lots of other things I'm happy to share.  
+This is the first library I've made publicly available.  
 I'm sure there's plenty of things I'm doing stupidly. Feel free to submit pull requests.
+
+You should use this if you don't want to use an ORM, but you do want some semblance of DRY.  
 
 # Why?
 
@@ -24,7 +25,7 @@ I'm sure there's plenty of things I'm doing stupidly. Feel free to submit pull r
   - lots of dependencies
   - complicated code, classes over 600 lines, tons of classes
 
-It's mostly type-safe. The most "dangerous" class to use is `Sql`, because it's largely
+It's mostly type-safe. The most dangerous class to use is `Sql`, because it's largely
 intended for throwing raw strings into your statements.
 
 This code has been inspired by (in desecending order of inspiration)
@@ -40,6 +41,7 @@ DISTINCT isn't implemented. You can sort of implement it by modifying a column n
 Lots of other things are missing, but hopefully this structure works out good.  
 
 ### Contact
+This is my first open-sourced library, but I work on lots of other things I'm happy to share. 
 Feel free to contact me:
 brianv .at. stanford.edu
 
@@ -108,8 +110,8 @@ Sorry it's not that well documented. Hopefully the readability and simplicity ma
 
 There's only runtime exceptions, and not too many of them. Typically they occur only when it is
 known that the compiled SQL would throw an exception if it was executed. One exception being 
-that you aren't allowed to "DELETE FROM TableName" without unprotected the `Delete` statement.
-The other cases are "bind time" exceptions:
+that you aren't allowed to `DELETE FROM TableName` without unprotected the `Delete` statement.
+The other cases are bind-time exceptions:
 - When Selecting from another `Select` statement, the other statement must have a non-empty alias
 - When joining a table, the select statement of the join walks through the join expression.
   -  If it finds that a `Column` with a non-null parent isn't defined in FROM or JOIN parts,
