@@ -86,8 +86,9 @@ brianv .at. stanford.edu
     }
     
     Select app_process_join(Application app_t, Process process_t){
+        // Only want the application part, not the Process part
         Application app_t = new Application();
-        Application process_t = new Process();
+        Process process_t = new Process();
         return new Select(app_t.getColumns())
               .from(app_t)
               .join(process_t, app_t.pk.eq(process_t.parent));
