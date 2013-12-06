@@ -1,0 +1,47 @@
+December 6, 2013 - 
+This is my first "open-sourced" library, but I work on lots of other things I'm happy to share.
+
+I'm sure there's plenty of things I'm doing stupidly. Feel free to submit pull requests.
+
+Why?
+Because I work in High Energy Physics, and research budgets are limited 
+  - we can't buy a new database when queries on 100m rows go slow
+  - so I want to be able to fine tune SQL
+Because I want to easily parse external Abstract Syntax Trees to SQL expressions easily
+  - and dynamically create complex, type-safe SQL expressions
+Because I like 
+  - SQL
+    = but sometimes it's real nice to be able to parameterize it
+  - Readable code
+    = but there's still a lot of boilerplate, sorry about that.
+  - Easily extendable code (hopefully this works out well)
+Because I don't like:
+  - ORMs all that much
+  - stmt.setLong(1, 1234L), stmt.setXXX(2, something), etc...
+  - huge jars
+  - lots of dependencies
+  - complicated code, classes over 600 lines, tons of classes
+
+It's mostly type-safe. The most "dangerous" class to use is "Sql", because it's largely
+intended for throwing raw strings into your statements.
+
+This code has been inspired by (in desecending order of inspiration)
+
+SQL-92/99 BNF Grammars : http://savage.net.au/SQL/
+Korma: http://sqlkorma.com/
+
+jOOq: http://jooq.org
+ORMLite : http://ormlite.com/
+
+Please look a look at the CHANGELOG
+
+There's quite a bit of improvement we could make to this. In general, howver, I want to stick
+with the core 11 classes (and not add anything else in there). Extra standard features will go
+under org.zerorm.core.primary (this package may change). 
+Examples there are Case, Fn (AVG, SUM, etc). DISTINCT isn't implemented. You can sort of implement 
+it by modifying a column name and adding a space.
+
+Lots of other things are missing, but hopefully this structure works out good.
+
+Feel free to contact me:
+brianv .at. stanford.edu
