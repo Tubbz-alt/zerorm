@@ -165,9 +165,11 @@ public class SQLFormatter extends AbstractSQLFormatter {
         SimpleTable parent = col.getParent();
         if(aliased){
             // If there's an alias, check the parent
-            s.append( parent != null && !parent.alias().isEmpty() ? parent.alias() + "." : "" );
+            if(parent != null){
+                s.append( parent.canonical()).append( "." );
+            }
         }
-        s.append( col.getName() == null ? parent.toString() : col.getName() );
+        s.append( col.getName() );
         return s.toString();
 
     }

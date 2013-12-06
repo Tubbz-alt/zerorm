@@ -41,6 +41,10 @@ public class Param<T> implements Formattable {
         this.valueClass = valueClass;
         init();
     }
+
+    public static <S> Param<S> checkedParam(Class<S> clazz) {
+        return new Param<>( "", clazz );
+    }
     
     public static <S> Param<S> checkedParam(String name, Class<S> clazz) {
         return new Param<>( name, clazz );

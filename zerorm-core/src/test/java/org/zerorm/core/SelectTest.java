@@ -29,20 +29,20 @@ public class SelectTest extends TestCase {
         
         Table0001 t0001 = new Table0001();
         Table0001x t0001x = new Table0001x();
-        String expected0001 = "SELECT pk, name FROM Table0001 UNION ALL SELECT pk, name FROM Table0001x";
+        String expected0001 = "SELECT Table0001.pk, Table0001.name FROM Table0001 UNION ALL SELECT Table0001x.pk, Table0001x.name FROM Table0001x";
         String actual = Select
                 .unionAll( t0001.selectAllColumns(), t0001x.selectAllColumns())
                 .formatted();
         check(msg, expected0001, actual);
         
-        String expected0002 = "SELECT pk, name FROM Table0001 WHERE pk = 1234 UNION ALL SELECT pk, name FROM Table0001x WHERE pk = 1234";
+        String expected0002 = "SELECT Table0001.pk, Table0001.name FROM Table0001 WHERE Table0001.pk = 1234 UNION ALL SELECT Table0001x.pk, Table0001x.name FROM Table0001x WHERE Table0001.pk = 1234";
         actual = Select
                 .unionAll( t0001.selectAllColumns(), t0001x.selectAllColumns())
                 .where( t0001.pk.eq( 1234L))
                 .formatted();
         check(msg, expected0002, actual);
         
-        String expected0003 = "SELECT t1_t1x.pk, t1_t1x.name FROM (SELECT pk, name FROM Table0001 UNION ALL SELECT pk, name FROM Table0001x ) t1_t1x WHERE t1_t1x.pk = 1234";
+        String expected0003 = "SELECT t1_t1x.pk, t1_t1x.name FROM (SELECT Table0001.pk, Table0001.name FROM Table0001 UNION ALL SELECT Table0001x.pk, Table0001x.name FROM Table0001x ) t1_t1x WHERE t1_t1x.pk = 1234";
         Select uni = Select.unionAll( t0001.selectAllColumns(), t0001x.selectAllColumns());
         actual = new Select( uni.as( "t1_t1x").getColumns() )
                 .from( uni )

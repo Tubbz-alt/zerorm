@@ -32,7 +32,7 @@ public class DeleteTest extends TestCase  {
         actual = del.formatted();
         check(misMatch, expected0001, actual);
         
-        String expected0002 = "DELETE FROM Table0001 WHERE pk = 1234";
+        String expected0002 = "DELETE FROM Table0001 WHERE Table0001.pk = 1234";
         actual = new Delete().from( t0001 ).where( t0001.pk.eq( 1234L)).formatted();
         check(misMatch, expected0002, actual);
         actual = new Delete(t0001).where( t0001.pk.eq( 1234L)).formatted();

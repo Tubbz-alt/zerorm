@@ -15,11 +15,11 @@ import org.zerorm.core.interfaces.SimpleTable;
  */
 public class Column<T> implements MaybeHasAlias<Column> {
     private SimpleTable parent;
-    private String name;
+    private final String name;
     private String alias = "";
     private Class<?> javaType;
     
-    public Column(){}
+    private Column(){this.name = "";}
     
     /**
      * Construct a column tied to a table.
@@ -64,9 +64,6 @@ public class Column<T> implements MaybeHasAlias<Column> {
         return name;
     }
     
-    public void setName(String name){
-        this.name = name;
-    }
     
     public SimpleTable getParent(){
         return this.parent;
@@ -95,6 +92,10 @@ public class Column<T> implements MaybeHasAlias<Column> {
         }
         this.alias = '"' + alias + '"';
         return this;
+    }
+    
+    public Param<T> checkedParam(){
+        return (Param<T>) Param.checkedParam( javaType );
     }
     
     public Param<T> checkedParam(String name){

@@ -19,14 +19,14 @@ public class ExtrasTest extends TestCase {
         
         Table0001 t1 = new Table0001();
         
-        String expected0001 = "SELECT CASE WHEN pk = 1234 THEN '1234' ELSE '4321' END FROM Table0001";
+        String expected0001 = "SELECT CASE WHEN Table0001.pk = 1234 THEN '1234' ELSE '4321' END FROM Table0001";
         Val<String> _then = new Val<>("1234");
         Val<String> _else = new Val<>("4321");
         Case _case = new Case(t1.pk.eq( 1234L), _then, _else);
         String actual = new Select( _case ).from( t1 ).formatted();
         check(message, expected0001, actual);
         
-        String expected0002 = "SELECT CASE WHEN pk = 1234 THEN '1234' ELSE '4321' END fakeName FROM Table0001";
+        String expected0002 = "SELECT CASE WHEN Table0001.pk = 1234 THEN '1234' ELSE '4321' END fakeName FROM Table0001";
         _case = new Case(t1.pk.eq( 1234L), _then, _else).as( "fakeName", Case.class);
         actual = new Select( _case ).from( t1 ).formatted();
         check(message, expected0002, actual);

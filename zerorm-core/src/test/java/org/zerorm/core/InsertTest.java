@@ -27,7 +27,7 @@ public class InsertTest extends TestCase {
         String actual = new Insert().into( t0001 ).source( t0001x ).formatted();
         check(misMatch, expected0001, actual);
 
-        String expected0002 = "INSERT INTO Table0001 SELECT pk, name FROM Table0001x";
+        String expected0002 = "INSERT INTO Table0001 SELECT Table0001x.pk, Table0001x.name FROM Table0001x";
         actual = new Insert().into( t0001 ).source( t0001x.selectAllColumns() ).formatted();
         check(misMatch, expected0002, actual);
         
@@ -37,7 +37,7 @@ public class InsertTest extends TestCase {
                 .columns( t0001.name).source( t0001 ).formatted();
         check(misMatch, expected0003, actual);
         
-        String expected0004 = "INSERT INTO Table0001_Names ( name ) SELECT name FROM Table0001";
+        String expected0004 = "INSERT INTO Table0001_Names ( name ) SELECT Table0001.name FROM Table0001";
         actual = new Insert().into( new Table("Table0001_Names") )
                 .columns( t0001.name).source( t0001.select(t0001.name) ).formatted();
         check(misMatch, expected0004, actual);

@@ -22,19 +22,19 @@ public class UpdateTest extends TestCase {
             fail("Should have thrown a runtime exception: Update needs a clause");
         } catch (RuntimeException rx){ }
         
-        String expected0001 = "UPDATE Table0001 SET name = 'test'";
+        String expected0001 = "UPDATE Table0001 SET Table0001.name = 'test'";
         Update upd = new Update( t0001 ).set( t0001.name.eq( "test"));
         String actual = upd.formatted();
         check(misMatch, expected0001, actual);
 
-        String expected0002 = "UPDATE Table0001 SET name = 'test' WHERE pk > 1234";
+        String expected0002 = "UPDATE Table0001 SET Table0001.name = 'test' WHERE Table0001.pk > 1234";
         upd = new Update( t0001 )
                 .set( t0001.name.eq( "test"))
                 .where( t0001.pk.gt( 1234L ));
         actual = upd.formatted();
         check(misMatch, expected0002, actual);
         
-        String expected0003 = "UPDATE Table0001 SET name = 'test', pk = 4321 WHERE pk = 1234";
+        String expected0003 = "UPDATE Table0001 SET Table0001.name = 'test', Table0001.pk = 4321 WHERE Table0001.pk = 1234";
         upd = new Update( t0001 )
                 .set( t0001.name.eq( "test"), t0001.pk.eq( 4321L) )
                 .where( t0001.pk.eq( 1234L ));
