@@ -106,7 +106,7 @@ public class AnimalTest
         assertEquals( expected0003, actual );
     }
 
-    public void testAliveAnimals(){
+    public void testNotExtinctAnimals(){
         ArrayList<String> aliveStates = new ArrayList<>();
         aliveStates.add( "SLEEPING" );
         aliveStates.add( "AWAKE" );
