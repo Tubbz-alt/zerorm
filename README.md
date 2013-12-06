@@ -1,4 +1,4 @@
-zerorm
+ZeroRM
 ======
 December 6, 2013  
 This is my first "open-sourced" library, but I work on lots of other things I'm happy to share.  
