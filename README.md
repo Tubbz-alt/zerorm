@@ -37,7 +37,7 @@ ORMLite : http://ormlite.com
 
 ### Improvements
 There's quite a bit of improvement we could make to this.  
-DISTINCT isn't implemented. You can sort of implement it by modifying a column name and adding a space.  
+`DISTINCT` isn't implemented. You can sort of implement it by modifying a column name and adding a space.  
 Lots of other things are missing, but hopefully this structure works out good.  
 
 ### Contact
@@ -52,7 +52,7 @@ brianv .at. stanford.edu
         @Schema(name="appID")   public Column id;
 
         public Application() { super(); }
-    };
+    }
     
     @Schema(name="process")
     class Process extends Table {
@@ -62,7 +62,7 @@ brianv .at. stanford.edu
         @Schema(name="pStatus")  public Column<String> status;
 
         public Process() { super(); }
-    };
+    }
     
     void exampleJoins(){
         Application app_t = new Application();
