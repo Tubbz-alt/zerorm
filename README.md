@@ -119,13 +119,13 @@ SELECT Animal.id, Animal.species, Animal.subspecies
 SELECT Animal.id, Animal.species, Animal.subspecies 
   FROM Animal 
   JOIN pet ON ( Animal.id = pet.type ) 
-  WHERE pet.name = ?;
+  WHERE pet.name = ?;                                 -- 'SPIKE'
 
 -- 4
 SELECT Animal.id, Animal.species, Animal.subspecies 
   FROM Animal 
   JOIN pet ON ( Animal.id = pet.type ) 
-  WHERE pet.status NOT IN (?,?,?);
+  WHERE pet.status NOT IN (?,?,?);                    -- ('SLEEPING','AWAKE','IN_UTERO')
 ```
 
 ## Current version
