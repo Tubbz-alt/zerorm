@@ -102,7 +102,8 @@ Select animalPet_t(){
         .join( pet_t, anml_t.pk.eq( pet_t.animal ) );
 }
 ```
-Produces (in order):  
+
+When formatted, the above `Select` statements would produce:
 ```sql
 -- 1
 SELECT Animal.id, Animal.species, Animal.subspecies 
