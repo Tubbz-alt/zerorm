@@ -47,61 +47,86 @@ Feel free to contact me:
 brianv .at. stanford.edu
 
 ## Code samples
-    class Application extends Table {
-        @Schema(name="app")     public Column pk;
-        @Schema(name="version") public Column version;
-        @Schema(name="appID")   public Column id;
+```java
+public static class Animal extends Table {              // Uses class name for table
+    @Schema(name = "id")         public Column pk;      // Unchecked columns
+    @Schema(name = "species")    public Column version;
+    @Schema(name = "subspecies") public Column revision;
+    public Animal(){ super(); }                         // Calling super does some magic
+};
+```  
+```java
+@Schema(name = "pet")
+public static class AnimalInstance extends Table {
+    @Schema(name = "id")         public Column<Long> pk;     // Checked columns
+    @Schema(name = "type")       public Column<Long> animal;
+    @Schema                      public Column<String> name; // uses field name
+    @Schema(name="mother")       public Column<Long> parent;
+    @Schema(name = "status")     public Column<String> status;
+    public AnimalInstance(){ super(); }
+};
+```  
+```java
+Animal anml_t = new Animal();
+AnimalInstance pet_t = new AnimalInstance();
 
-        public Application() { super(); }
-    }
-    
-    @Schema(name="process")
-    class Process extends Table {
-        @Schema(name="process")  public Column<Long> pk;
-        @Schema                  public Column<Long> pid;
-        @Schema(name="app")      public Column<Long> parent;
-        @Schema(name="pStatus")  public Column<String> status;
+public void testExampleJoins(){
 
-        public Process() { super(); }
-    }
-    
-    void exampleJoins(){
-        Application app_t = new Application();
-        Process process_t = new Process();
-        Select simpleJoin = appProcess_t(app_t, process_t);
-        System.out.println(app_process_t.formatted());
-        
-        Select pid_1234 = appProcess_t(app_t, process_t)
-          .where(process_t.pid.eq(1234L));
-        System.out.println(pid_1234.formatted());
-        
-        Param<Long> pidParam = p.pid.checkedParam( "pid");
-        Select pid_x = appProcess_t(app_t, process_t)
-          .where(process_t.pid.eq(pidParam));
-        pidParam.setValue( 1234L );
-        pidParam.setValue( 4321L );
-        System.out.println(pid_x.formatted());
-    }
-    
-    void runningApplications(){
-        ArrayList<String> rStates = new ArrayList<>();
-        rStates.add("RUNNING");
-        rStates.add("BUSY");
-        
-        Select running = appProcess_t(app_t, process_t)
-          .where(process_t.status.in(rStates));
-        System.out.println(running.formatted());
-    }
-    
-    Select app_process_join(Application app_t, Process process_t){
-        // Only want the application part, not the Process part
-        Application app_t = new Application();
-        Process process_t = new Process();
-        return new Select(app_t.getColumns())
-              .from(app_t)
-              .join(process_t, app_t.pk.eq(process_t.parent));
-    }
+    Select simpleJoin = animalPet_t();                      /* 1 */
 
+    Select pet_1234 = animalPet_t()
+        .where( pet_t.id.eq( 1234L ) );                     /* 2 */
+
+    Param<String> nameParam = pet_t.name.checkedParam();
+    Select pid_x = animalPet_t()
+        .where( pet_t.name.eq( nameParam) );                /* 3 */
+    nameParam.setValue( "Lucy" ); 
+    nameParam.setValue( "Spike" );
+}
+
+// Apparently animals who have died in captivity...
+public void deadPets(){
+    ArrayList<String> aliveStates = new ArrayList<>();
+    aliveStates.add( "SLEEPING" );
+    aliveStates.add( "AWAKE" );
+    aliveStates.add( "IN_UTERO" );
+    
+    Select deadPets = animalPet_t()
+        .where( pet_t.status.not_in( aliveStates ) );       /* 4 */
+}
+
+Select animalPet_t(){
+    // Only want the animal columns, not the pet columns
+    return new Select( anml_t.getColumns() )
+        .from( anml_t )
+        .join( pet_t, anml_t.pk.eq( pet_t.animal ) );
+}
+```
+Produces (in order):  
+```sql
+-- 1
+SELECT Animal.id, Animal.species, Animal.subspecies 
+  FROM Animal 
+  JOIN pet ON ( Animal.id = pet.type );
+
+-- 2
+SELECT Animal.id, Animal.species, Animal.subspecies 
+  FROM Animal 
+  JOIN pet ON ( Animal.id = pet.type ) 
+  WHERE pet.id = 1234;
+
+-- 3
+SELECT Animal.id, Animal.species, Animal.subspecies 
+  FROM Animal 
+  JOIN pet ON ( Animal.id = pet.type ) 
+  WHERE pet.name = ?;
+
+-- 4
+SELECT Animal.id, Animal.species, Animal.subspecies 
+  FROM Animal 
+  JOIN pet ON ( Animal.id = pet.type ) 
+  WHERE pet.status NOT IN (?,?,?);
+```
 
 ## Current version
 
