@@ -1,4 +1,4 @@
-0RM (aka zerorm)
+0RM (or ZeroRM)
 ======
 This is the first library I've made publicly available.  
 I'm sure there's plenty of things I'm doing stupidly. Feel free to submit pull requests.
