@@ -24,7 +24,7 @@ import org.zerorm.core.interfaces.Schema;
 /**
  * Unit test for simple App.
  */
-public class AppTest
+public class AnimalTest
         extends TestCase {
 
     public static class Animal extends Table {              // Uses class name for table
@@ -51,7 +51,7 @@ public class AppTest
      *
      * @param testName name of the test case
      */
-    public AppTest(String testName){
+    public AnimalTest(String testName){
         super( testName );
 
     }
