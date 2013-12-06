@@ -35,13 +35,9 @@ jOOq: http://jooq.org
 ORMLite : http://ormlite.com  
 
 ### Improvements
-There's quite a bit of improvement we could make to this. In general, howver, I want to stick
-with the core 11 classes (and not add anything else in there). Extra standard features will go
-under org.zerorm.core.primary (this package may change). 
-Examples there are Case, Fn (AVG, SUM, etc). DISTINCT isn't implemented. You can sort of implement 
-it by modifying a column name and adding a space.
-
-Lots of other things are missing, but hopefully this structure works out good.
+There's quite a bit of improvement we could make to this.  
+DISTINCT isn't implemented. You can sort of implement it by modifying a column name and adding a space.  
+Lots of other things are missing, but hopefully this structure works out good.  
 
 ### Contact
 Feel free to contact me:
