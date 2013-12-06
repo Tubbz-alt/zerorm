@@ -47,6 +47,52 @@ Lots of other things are missing, but hopefully this structure works out good.
 Feel free to contact me:
 brianv .at. stanford.edu
 
+## Code samples
+    class Application extends Table {
+        @Schema(name="app")     public Column pk;
+        @Schema(name="version") public Column version;
+        @Schema(name="appID")   public Column id;
+
+        public Application() { super(); }
+    };
+    
+    @Schema(name="process")
+    class Process extends Table {
+        @Schema(name="process")  public Column<Long> pk;
+        @Schema                  public Column<Long> pid;
+        @Schema(name="app")      public Column<Long> parent;
+        @Schema(name="pStatus")  public Column<String> status;
+
+        public Process() { super(); }
+    };
+    
+    void exampleJoins(){
+        Application app_t = new Application();
+        Process process_t = new Process();
+        Select simpleJoin = appProcess_t(app_t, process_t);
+        System.out.println(app_process_t.formatted();
+        
+        Select pid_1234 = appProcess_t(app_t, process_t)
+          .where(process_t.pid.eq(1234L);
+        System.out.println(pid_1234.formatted();
+        
+        Param<Long> pidParam = p.pid.checkedParam( "pid");
+        Select pid_x = appProcess_t(app_t, process_t)
+          .where(process_t.pid.eq(pidParam);
+        pidParam.setValue( 1234L );
+        pidParam.setValue( 4321L );
+        System.out.println(pid_x.formatted();
+        
+    }
+    
+    Select app_process_join(Application app_t, Process process_t){
+        Application app_t = new Application();
+        Application process_t = new Process();
+        return new Select(app_t.getColumns())
+              .from(app_t)
+              .join(process_t, app_t.pk.eq(process_t.parent));
+    }
+
 
 ## Current version
 
