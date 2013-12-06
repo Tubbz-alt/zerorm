@@ -3,7 +3,7 @@
 This is the first library I've made publicly available.  
 I'm sure there's plenty of things I'm doing stupidly. Feel free to submit pull requests.
 
-You should use this if you don't want to use an ORM, but you do want some semblance of DRY.  
+You should use this if you don't want to use an ORM, but you do want some semblance of DRY. It's also useful for mapping Abstract Syntax Trees to SQL Expressions.
 
 # Why?
 
