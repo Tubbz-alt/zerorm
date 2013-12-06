@@ -19,12 +19,12 @@ I'm sure there's plenty of things I'm doing stupidly. Feel free to submit pull r
   - Easily extendable code (hopefully this works out well...)
 4. I don't like:
   - ORMs all that much
-  - stmt.setLong(1, 1234L), stmt.setXXX(2, something), etc...
+  - `stmt.setLong(1, 1234L)`, `stmt.setXXX(2, something)`, etc...
   - huge jars
   - lots of dependencies
   - complicated code, classes over 600 lines, tons of classes
 
-It's mostly type-safe. The most "dangerous" class to use is "Sql", because it's largely
+It's mostly type-safe. The most "dangerous" class to use is `Sql`, because it's largely
 intended for throwing raw strings into your statements.
 
 This code has been inspired by (in desecending order of inspiration)
@@ -108,11 +108,11 @@ Sorry it's not that well documented. Hopefully the readability and simplicity ma
 
 There's only runtime exceptions, and not too many of them. Typically they occur only when it is
 known that the compiled SQL would throw an exception if it was executed. One exception being 
-that you aren't allowed to "DELETE FROM TableName" without unprotected the Delete statement.
+that you aren't allowed to "DELETE FROM TableName" without unprotected the `Delete` statement.
 The other cases are "bind time" exceptions:
-- When Selecting from another Select statement, the other statement must have a non-empty alias
+- When Selecting from another `Select` statement, the other statement must have a non-empty alias
 - When joining a table, the select statement of the join walks through the join expression.
-  -  If it finds that a Column with a non-null parent isn't defined in FROM or JOIN parts,
+  -  If it finds that a `Column` with a non-null parent isn't defined in FROM or JOIN parts,
      it throws an exception.
 - Type safe parameter binding
 - A few other cases (check the code)
@@ -122,6 +122,6 @@ The other cases are "bind time" exceptions:
 There are some unit tests. There should be more. I have other tests which exercise the library 
 more that I typically run, but still, more unit tests are needed.
 
-I have used the Select class in code quite a bit. Not so much the Insert, Update, Delete.
+I have used the `Select` class in code quite a bit. Not so much the `Insert`, `Update`, `Delete`.
 Proceed with extra caution for these.
 
