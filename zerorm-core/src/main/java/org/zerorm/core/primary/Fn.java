@@ -16,6 +16,8 @@ import org.zerorm.core.interfaces.Primary;
 public class Fn extends Primary<Fn> implements MaybeHasParams {
     private final String function;
     private final MaybeHasAlias valueExpr;
+    private final String fnFormat;
+    public static final String FN_FORMAT = "%s( %s )";
     
     public static final Fn AVG = new Fn( "AVG" );
     public static final Fn MAX = new Fn( "MAX" );
@@ -25,23 +27,36 @@ public class Fn extends Primary<Fn> implements MaybeHasParams {
     public static final Fn ANY = new Fn( "ANY" );
     public static final Fn SOME = new Fn( "SOME" );
     public static final Fn COUNT = new Fn( "COUNT" );
+    public static final Fn DISTINCT = new Fn( "DISTINCT", "%s %s" );
     
     private Fn(String function){
+        this.fnFormat = FN_FORMAT;
         this.function = function;
         this.valueExpr = null;
     }
     
-    private Fn(String function, MaybeHasAlias col){
+    private Fn(String function, String format){
+        this.fnFormat = format;
+        this.function = function;
+        this.valueExpr = null;
+    }
+    
+    private Fn(String function, MaybeHasAlias col, String format){
+        this.fnFormat = format;
         this.function = function;
         this.valueExpr = col;
     }
     
     public Primary<Fn> of(MaybeHasAlias col){
-        return new Fn(this.function, col);
+        return new Fn(function, col, fnFormat);
     }
     
     public static Primary<Fn> of(String function, MaybeHasAlias col){
-        return new Fn(function, col);
+        return new Fn(function, col, FN_FORMAT);
+    }
+    
+    public MaybeHasAlias getValueExpression(){
+        return this.valueExpr;
     }
     
     @Override
@@ -65,7 +80,7 @@ public class Fn extends Primary<Fn> implements MaybeHasParams {
     
     @Override
     public String formatted(AbstractSQLFormatter formatter){
-        return function + "( " + valueExpr.formatted( formatter ) + " )";
+        return String.format( fnFormat, function, valueExpr.formatted( formatter ) );
     }
     
 }

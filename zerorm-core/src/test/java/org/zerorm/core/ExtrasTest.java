@@ -61,6 +61,16 @@ public class ExtrasTest extends TestCase {
         String expected0003 = "SELECT AVG( Table0001.pk ) avgpk FROM Table0001";
         actual = t1.select( AVG.of( t1.pk ).as( "avgpk" ) ).formatted();
         assertEquals(expected0003, actual);
+        
+        String expected0004 = "SELECT DISTINCT Table0001.pk FROM Table0001";
+        actual = t1.select( DISTINCT.of( t1.pk ) ).formatted();
+        System.out.println(actual);
+        assertEquals(expected0004, actual);
+        
+        String expected0005 = "SELECT DISTINCT Table0001.pk avgpk FROM Table0001";
+        actual = t1.select( DISTINCT.of( t1.pk ).as( "avgpk" ) ).formatted();
+        assertEquals(expected0005, actual);
+        
     }
     
     void check(String message, String expected, String actual){
