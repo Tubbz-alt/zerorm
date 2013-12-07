@@ -179,6 +179,16 @@ public enum Op {
     }
     
     /**
+     * Return "columnName" as the colunm name.
+     * @param columnName
+     * @return 
+     */
+    public static Column $$(String columnName){
+        columnName = columnName.replace( "\"", "");
+        return new Column("\"" + columnName + "\"", null);
+    }
+
+    /**
      * Magic function to turn a var arg of strings into a columns.
      * Use wisely
      * @param colNames
@@ -188,6 +198,21 @@ public enum Op {
         Column[] clist = new Column[colNames.length];
         for(int i = 0; i < clist.length; i++){
             clist[i] = new Column(colNames[i], null);
+        }
+        return clist;
+    }
+    
+    /**
+     * Magic function to turn a var arg of strings into a columns.
+     * Use wisely
+     * @param colNames
+     * @return 
+     */
+    public static Column[] $$(String... colNames){
+        Column[] clist = new Column[colNames.length];
+        for(int i = 0; i < clist.length; i++){
+            String name = colNames[i].replace( "\"", "");
+            clist[i] = new Column(name, null);
         }
         return clist;
     }
