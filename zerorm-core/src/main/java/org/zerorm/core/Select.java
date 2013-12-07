@@ -189,7 +189,7 @@ public class Select extends Executable implements SimpleTable<Select> {
      * @param column Name of Column
      * @return 
      */
-    public Column getSelection(String column) {
+    public Column getSelection(Column column) {
         return checkColumn(column);
     }
     
@@ -199,7 +199,7 @@ public class Select extends Executable implements SimpleTable<Select> {
      * @return 
      */
     public Column $(String column) {
-        return getSelection(column);
+        return getSelection(new Column(column, this));
     }
     
     /**
@@ -281,12 +281,20 @@ public class Select extends Executable implements SimpleTable<Select> {
         return join(table, test, Join.RIGHT_OUTER);
     }
     
+    public Select join(SimpleTable table, JoinExpr expr) {
+        return join(table, expr.test, expr.type); 
+    }
+    
     /**
      * get list of JOIN expressions.
      * @return FROM SimpleTable
      */
     public LinkedHashMap<JoinExpr, SimpleTable> getJoins() {
         return joinList;
+    }
+    
+    public void setJoins(LinkedHashMap<JoinExpr, SimpleTable> joinList) {
+        this.joinList = joinList;
     }
 
     /**
@@ -422,25 +430,24 @@ public class Select extends Executable implements SimpleTable<Select> {
         return this;
     }
 
-    private Select checkSelections(Collection columns){
-        for(Object c: columns){
+    private Select checkSelections(Collection<? extends MaybeHasAlias> columns){
+        for(MaybeHasAlias c: columns){
             checkColumn(c);
         }
         return this;
     }
     
-    private Column checkColumn(Object c){
-        MaybeHasAlias cc = c instanceof String ? new Column((String)c, null) :(MaybeHasAlias)c;
-        if(cc instanceof SimpleTable){
+    private Column checkColumn(MaybeHasAlias c){
+        if(c instanceof SimpleTable){
             return null;
         } else {
-            Column neue = new Column( cc.canonical(), this );
+            Column neue = new Column( c.canonical(), this );
             for(MaybeHasAlias colx: scope.exportedMapping.keySet()){
-                if(colx.canonical().equals( cc.canonical())){
+                if(colx.canonical().equals( c.canonical())){
                     return colx instanceof Column ? (Column) colx : neue;
                 }
             }
-            scope.exportedMapping.put( neue, cc );
+            scope.exportedMapping.put( neue, c );
             return neue;
         }
     }
