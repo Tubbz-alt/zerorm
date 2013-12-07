@@ -1,33 +1,36 @@
 0RM (or ZeroRM)
 ======
-This is the first library I've made publicly available.  
-I'm sure there's plenty of things I'm doing stupidly. Feel free to submit pull requests.
-
 You should use this if you don't want to use an ORM, but you do want some semblance of DRY.  
-It's also useful for mapping Abstract Syntax Trees to SQL Expressions.
+It's also useful for mapping Abstract Syntax Trees to SQL Expressions.  
+You want something that's *type safer* for dynamically generating SQL.
+
+I'm sure there's plenty of things I'm doing stupidly in this. Feel free to submit pull requests.
 
 # Why?
 
-1. I work in High Energy Physics, and research budgets are limited 
-  - we can't buy a new database when queries on 100m rows go slow
-  - so I want to be able to fine tune SQL
-2. I want to easily parse external Abstract Syntax Trees to SQL expressions easily
-  - and dynamically create complex, type-safe SQL expressions
-3. I like 
-  - SQL
-    - but sometimes it's real nice to be able to parameterize it
+1. Budgets are limited, you can't buy a new database when queries on 100m rows go slow
+  - Sometimes you need to hand-tweak that SQL
+  - Remember that time the RDBMS optimizer had a brain fart, and nobody told the ORM?
+2. You maybe to easily parse external Abstract Syntax Trees to SQL expressions easily
+  - and maybe create complex, type-safer SQL expressions
+3. You like 
+  - SQL and Java
+    - but hate seeing super long SQL strings in code
+    - and think it would be nice to be able to parameterize parts of it
+    - Sometimes like defining things on the fly
+      - `new Select( $("name") ).from( $("animal") ).where( $("name").eq( param ) );`
   - Readable code
-    - but there's still a lot of boilerplate, sorry about that.
-  - Easily extendable code (hopefully this works out well...)
+    - there's still a lot of boilerplate, sorry about that.
+  - Extendable code (hopefully this works out well...)
 4. I don't like:
   - ORMs all that much
   - `stmt.setLong(1, 1234L)`, `stmt.setXXX(2, something)`, etc...
+    - You've got your own custom mappers anyhow.
   - huge jars
   - lots of dependencies
   - complicated code, classes over 600 lines, tons of classes
 
-It's mostly type-safe. The most dangerous class to use is `Sql`, because it's largely
-intended for throwing raw strings into your statements.
+It's mostly type-safer. The most dangerous class to use is `Sql`, because it's largely intended for throwing raw strings into your statements. `$( colName )` is also unsafe in the sense that whatever `colName` is will be thrown out directly to SQL. However, $$( colName ) is a bit safer because it creates the identifier wrapped in double quotes (ANSI_QUOTES mode in MySQL), at the expense of requiring the case be completely correct in most cases.
 
 This code has been inspired by (in desecending order of inspiration)
 
@@ -46,62 +49,100 @@ This is my first open-sourced library, but I work on lots of other things I'm ha
 Feel free to contact me:
 brianv .at. stanford.edu
 
-## Code samples
-    class Application extends Table {
-        @Schema(name="app")     public Column pk;
-        @Schema(name="version") public Column version;
-        @Schema(name="appID")   public Column id;
+## Not unrealistic code examples
+```java
+public static class Animal extends Table {                   // Uses class name for table
+    @Schema(name = "id")         public Column pk;           // Unchecked columns
+    @Schema(name = "species")    public Column version;
+    @Schema(name = "subspecies") public Column revision;
+    
+    public Animal(){ super(); }                              // super does some magic
+};
+```  
+```java
+@Schema(name = "pet")
+public static class AnimalInstance extends Table {
+    @Schema(name = "id")         public Column<Long> pk;     // Checked columns
+    @Schema(name = "type")       public Column<Long> animal;
+    @Schema                      public Column<String> name; // uses field name
+    @Schema(name="mother")       public Column<Long> parent;
+    @Schema(name = "status")     public Column<String> status;
+    
+    public AnimalInstance(){ super(); }
+};
+```  
+```java
+Animal anml = new Animal();
+AnimalInstance pet = new AnimalInstance();
 
-        public Application() { super(); }
-    }
-    
-    @Schema(name="process")
-    class Process extends Table {
-        @Schema(name="process")  public Column<Long> pk;
-        @Schema                  public Column<Long> pid;
-        @Schema(name="app")      public Column<Long> parent;
-        @Schema(name="pStatus")  public Column<String> status;
+public void testExampleJoins(){
 
-        public Process() { super(); }
-    }
-    
-    void exampleJoins(){
-        Application app_t = new Application();
-        Process process_t = new Process();
-        Select simpleJoin = appProcess_t(app_t, process_t);
-        System.out.println(app_process_t.formatted());
-        
-        Select pid_1234 = appProcess_t(app_t, process_t)
-          .where(process_t.pid.eq(1234L));
-        System.out.println(pid_1234.formatted());
-        
-        Param<Long> pidParam = p.pid.checkedParam( "pid");
-        Select pid_x = appProcess_t(app_t, process_t)
-          .where(process_t.pid.eq(pidParam));
-        pidParam.setValue( 1234L );
-        pidParam.setValue( 4321L );
-        System.out.println(pid_x.formatted());
-    }
-    
-    void runningApplications(){
-        ArrayList<String> rStates = new ArrayList<>();
-        rStates.add("RUNNING");
-        rStates.add("BUSY");
-        
-        Select running = appProcess_t(app_t, process_t)
-          .where(process_t.status.in(rStates));
-        System.out.println(running.formatted());
-    }
-    
-    Select app_process_join(Application app_t, Process process_t){
-        // Only want the application part, not the Process part
-        Application app_t = new Application();
-        Process process_t = new Process();
-        return new Select(app_t.getColumns())
-              .from(app_t)
-              .join(process_t, app_t.pk.eq(process_t.parent));
-    }
+    Select simpleJoin = animalPet();                        /* 1 */
 
+    Select pet_1234 = animalPet()
+        .where( pet.id.eq( 1234L ) );                       /* 2 */
+
+    Param<String> nameParam = pet.name.checkedParam();
+    Select animalsNamed = animalPet()
+        .where( pet.name.eq(nameParam) );                   /* 3 */
+    nameParam.setValue( "Lucy" ); 
+    nameParam.setValue( "Spike" );
+    
+    // How this might play out...
+    try(PreparedStatement stmt = animalsNamed.prepareAndBind( getConnection() ){
+      ResultSet rs = stmt.executeQuery();
+      while(rs.next(){
+        // do Something fancy
+      }
+    } catch (SQLException ex){ 
+      /* nah, our pet database is purrfect */ 
+    }
+}
+
+// Animals who have died in captivity...
+public void deadPets(){
+    ArrayList<String> aliveStates = new ArrayList<>();
+    aliveStates.add( "SLEEPING" );
+    aliveStates.add( "AWAKE" );
+    aliveStates.add( "IN_UTERO" );
+    
+    Select deadPets = animalPet()
+        .where( pet.status.not_in( aliveStates ) );       /* 4 */
+}
+
+Select animalPet(){
+    // Only want the animal columns, not the pet columns
+    return new Select( anml.getColumns() )
+        .from( anml )
+        .join( pet, anml.pk.eq( pet.animal ) );
+}
+```
+
+When formatted, the above `Select` statements would produce:
+```sql
+-- 1
+SELECT Animal.id, Animal.species, Animal.subspecies 
+  FROM Animal 
+  JOIN pet ON ( Animal.id = pet.type );
+
+-- 2
+SELECT Animal.id, Animal.species, Animal.subspecies 
+  FROM Animal 
+  JOIN pet ON ( Animal.id = pet.type ) 
+  WHERE pet.id = 1234;
+
+-- 3
+SELECT Animal.id, Animal.species, Animal.subspecies 
+  FROM Animal 
+  JOIN pet ON ( Animal.id = pet.type ) 
+  WHERE pet.name = ?;                             -- 'SPIKE'
+
+-- 4
+SELECT Animal.id, Animal.species, Animal.subspecies 
+  FROM Animal 
+  JOIN pet ON ( Animal.id = pet.type ) 
+  WHERE pet.status NOT IN (?,?,?);                -- ('SLEEPING','AWAKE','IN_UTERO')
+```
 
 ## Current version
 
@@ -117,7 +158,7 @@ The other cases are bind-time exceptions:
 - When joining a table, the select statement of the join walks through the join expression.
   -  If it finds that a `Column` with a non-null parent isn't defined in FROM or JOIN parts,
      it throws an exception.
-- Type safe parameter binding
+- Type safer parameter binding
 - A few other cases (check the code)
 
 ### Testing
