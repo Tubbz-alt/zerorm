@@ -14,18 +14,21 @@ You need something for production (seriously, the maven version is 0.1-SNAPSHOT)
 1. Budgets are limited, you can't buy a new database when queries on 100m rows go slow
   - Sometimes you need to hand-tweak that SQL
   - Remember that time the RDBMS optimizer had a brain fart, and nobody told the ORM?
-2. You maybe to easily parse external Abstract Syntax Trees to SQL expressions easily
-  - and maybe create complex, type-safer SQL expressions
-3. You like 
+2. You want the ability to:
+  - parse Abstract Syntax Trees to SQL expressions easily
+    - and maybe create complex, type-safer SQL expressions
+  - pre-process parts of your SQL at compile/bind-time
+    - you can override the `formatted()` method on individual `Formattable` objects
+    - or, more generally, create a new `AbstractSQLFormatter`
+3. You like: 
   - SQL and Java
     - but hate seeing super long SQL strings in code
     - and think it would be nice to be able to parameterize parts of it
     - Sometimes like defining things on the fly
-      - `new Select( $("name") ).from( $("animal") ).where( $("name").eq( param ) );`
+      - `new Select( $("name") ).from( "animal" ).where( $("name").eq( param ) );`
   - Readable code
-    - there's still a lot of boilerplate, would love to remove lines
-  - Extendable code (hopefully this works out well...)
-4. You don't like:
+  - Extendable code
+4. You don't like: 
   - ORMs all that much
   - Or this: `stmt.setLong(1, 1234L)`, `stmt.setXXX(2, something)`
     - But you've got your own custom mappers anyhow.
@@ -41,8 +44,7 @@ The most dangerous class to use is `Sql`, because it's largely intended for thro
 
 #### Improvements
 There's quite a bit of improvement we could make to this.  
-`DISTINCT` isn't implemented. You can sort of implement it by modifying a column name and adding a space.  
-Lots of other things are missing, but hopefully this structure works out good.  
+Things are missing from SQL-9[29], but hopefully most of it is easily implemented.  
 
 #### Inspirations
 SQL-92/99 BNF Grammars : http://savage.net.au/SQL  
@@ -102,6 +104,27 @@ public void testExampleJoins(){
     } catch (SQLException ex){ 
       /* nah, our pet database is purrfect */ 
     }
+    
+    // Redefine selections at runtime
+    Select distNames = animalPet()
+        .clearSelections()
+        .selection( DISTINCT.of( pet.name ) )
+        .selection( anml.getColumns() );
+    
+    // Dynamically wrap selections into new ones
+    Select dn = new Select( distNames.getColumns() )        /* 4 */
+        .from( distNames.as("dn") );
+    
+    // Add hooks that will be executed before the SQL is compiled
+    Select stageFirst = new Select(){
+            @Override
+            public String formatted(){
+               fillTempTableFirst();
+               setupComplexTransaction();
+               return super.formatted(); 
+            }
+        }.selection( $("externalKey") )
+        .from( "tempTable" );
 }
 
 // Animals who have died in captivity...
@@ -112,7 +135,7 @@ public void deadPets(){
     aliveStates.add( "IN_UTERO" );
     
     Select deadPets = animalPet()
-        .where( pet.status.not_in( aliveStates ) );       /* 4 */
+        .where( pet.status.not_in( aliveStates ) );       /* 5 */
 }
 
 Select animalPet(){
@@ -143,6 +166,13 @@ SELECT Animal.id, Animal.species, Animal.subspecies
   WHERE pet.name = ?;                             -- 'SPIKE'
 
 -- 4
+SELECT dn.name, dn.id, dn.species, dn.subspecies 
+  FROM  ( SELECT DISTINCT pet.name, Animal.id, 
+    Animal.species, Animal.subspecies 
+    FROM Animal 
+    JOIN pet ON ( Animal.id = pet.type ) ) dn
+
+-- 5
 SELECT Animal.id, Animal.species, Animal.subspecies 
   FROM Animal 
   JOIN pet ON ( Animal.id = pet.type ) 
