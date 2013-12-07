@@ -1,14 +1,13 @@
 
 package org.zerorm.core;
 
-// Ops and their sql
-
 import java.util.List;
 import org.zerorm.core.interfaces.Formattable;
 import org.zerorm.core.interfaces.MaybeHasAlias;
 
 /**
  * Ops and their SQL equivalence. Methods to construct boolean Expressions.
+ * Additional static shorthand methods to construct Columns or Tables
  * @author bvan
  */
 public enum Op {

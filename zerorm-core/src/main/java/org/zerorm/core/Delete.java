@@ -10,14 +10,10 @@ import org.zerorm.core.interfaces.Executable;
  * @author bvan
  */
 public class Delete extends Executable {
-
     private Table from;
     private Expr where = new Expr();
     private boolean protectedTable = true;
 
-    /**
-     * Construct initial DELETE statement.
-     */
     public Delete() { }
 
     /**
@@ -27,24 +23,19 @@ public class Delete extends Executable {
     public Delete(Table table) {
         this.from = table;
     }
-
+    
     public Delete(String tableName) {
         this.from = new Table(tableName);
     }
     
     /**
-     * FROM
-     * Add primary table for selection by table name
-     * Does not support implicit joins (i.e. 'FROM table1, table2' )
-     * @param tableName
-     * @param tableAlias
-     * @return this
+     * Set table to delete from
      */
     public Delete from(Table table) {
         from = table;
         return this;
     }
-
+    
     public Delete from(String tableName) {
         return from(new Table(tableName));
     }
@@ -59,14 +50,7 @@ public class Delete extends Executable {
      * @return 
      */
     public Delete where(Expr... predicates) {
-        if(predicates.length == 1 && predicates[0] != null){
-            if(where.isEmpty()){
-                where = Expr.and( predicates );
-            } else {
-                where = Expr.and( where, Expr.and( predicates ) );
-            }
-            where.setWrapped( false );
-        }
+        where = Expr.collapse( where, predicates );
         return this;
     }
     

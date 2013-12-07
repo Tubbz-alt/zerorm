@@ -186,7 +186,6 @@ public class Table implements SimpleTable<Table> {
                 clazz = clazz.getSuperclass()){
             initAC(clazz);
         }
-
     }
     
     private void initAC(Class<?> clazz){

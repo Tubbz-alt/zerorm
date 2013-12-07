@@ -27,7 +27,7 @@ public class Insert extends Executable {
     public Insert(Table table) {
         this.into = table;
     }
-
+    
     public Insert(String tableName) {
         this.into = new Table(tableName);
     }
@@ -36,7 +36,7 @@ public class Insert extends Executable {
         this.into = into;
         return this;
     }
-    
+
     public Insert into(String into){
         this.into = new Table(into);
         return this;
@@ -80,6 +80,12 @@ public class Insert extends Executable {
         return this.source;
     }
     
+    /**
+     * Select source for the insertion.
+     * This should either be a List or a SimpleTable (Table or Select objects)
+     * @param source
+     * @return 
+     */
     public Insert source(Object source){
         if( !((source instanceof List) || (source instanceof SimpleTable))){
             throw new RuntimeException("Value must be list or SimpleTable (table or query)");

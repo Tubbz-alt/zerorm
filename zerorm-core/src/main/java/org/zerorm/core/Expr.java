@@ -16,6 +16,7 @@ import org.zerorm.core.interfaces.MaybeHasParams;
 public class Expr implements MaybeHasParams, Formattable {
     
     static class SafeList extends Param<List> implements MaybeHasParams, Formattable {
+        // TODO: Clean this up
         List checkedList;
         String name;
         public SafeList(List list){
@@ -43,7 +44,7 @@ public class Expr implements MaybeHasParams, Formattable {
         
         @Override
         public boolean hasParams(){
-            return !checkedList.isEmpty();
+            return !getParams().isEmpty();
         }
 
         @Override
@@ -55,11 +56,6 @@ public class Expr implements MaybeHasParams, Formattable {
                 paramList.add(new Param(pname, checkedList.get( i ) ));
             }
             return paramList;
-        }
-        
-        @Override
-        public String formatted(){
-            return formatted(AbstractSQLFormatter.getDefault());
         }
 
         @Override
@@ -80,9 +76,6 @@ public class Expr implements MaybeHasParams, Formattable {
     private Object tRight;
     private Op oper;
     
-    /**
-     * Construct Empty expression
-     */
     protected Expr(){ }
     
     private Expr(Object identifier){
@@ -96,7 +89,7 @@ public class Expr implements MaybeHasParams, Formattable {
     
     /**
      * Create a new expression. This expression will be be rendered wrapped 
-     * with parens.
+     * with parens by default.
      * @param object
      * @param op
      * @param right

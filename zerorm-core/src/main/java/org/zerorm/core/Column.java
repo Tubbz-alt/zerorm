@@ -23,29 +23,20 @@ public class Column<T> extends Primary<Column> {
     
     /**
      * Construct a column tied to a table.
-     * @param name
-     * @param parent 
      */
     public Column(String name, SimpleTable parent){
         this(name, Object.class, parent);
     }
 
     /**
-     * Construct a column with an alias to use when the column is used as
-     * a selection.
-     * @param name
-     * @param alias
-     * @param parent 
+     * Construct a column with a parent table and alias
      */
     public Column(String name, SimpleTable parent, String alias){
         this(name, Object.class, parent, alias);
     }
     
     /**
-     * Construct a column tied to a table.
-     * @param name
-     * @param type
-     * @param parent 
+     * Construct a column tied to a table. Supply a default column type (Long, String, etc..)
      */
     public Column(String name, Class<?> type, SimpleTable parent){
         this.name = name;
@@ -63,7 +54,6 @@ public class Column<T> extends Primary<Column> {
     public String getName(){
         return name != null ? name : "";
     }
-    
     
     public SimpleTable getParent(){
         return this.parent;
