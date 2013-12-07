@@ -1,14 +1,16 @@
 0RM (or ZeroRM)
 ======
-##### You should use this if you don't want to use an ORM, but you do want some semblance of DRY.  
-##### You want something that's *type safer* for dynamically generating SQL.
-##### It's also useful for mapping Abstract Syntax Trees to SQL Expressions.  
-##### You should not use this for production (*yet*)
+I'm sure there's plenty of things I'm doing stupidly in this. Feel free to submit pull requests.  
 
-##### I'm sure there's plenty of things I'm doing stupidly in this. Feel free to submit pull requests.
+#### You should use this if:  
+You don't want to use an ORM, but you do want some semblance of DRY  
+You want something that's *type safer* for dynamically generating SQL  
+You need something that will let you easily translate DSL's Abstract Syntax Tree into SQL  
 
-# Why?
+#### You should NOT use this if:
+You need something for production (seriously, the maven version is 0.1-SNAPSHOT)
 
+## More Reasons?  
 1. Budgets are limited, you can't buy a new database when queries on 100m rows go slow
   - Sometimes you need to hand-tweak that SQL
   - Remember that time the RDBMS optimizer had a brain fart, and nobody told the ORM?
@@ -37,23 +39,22 @@ It's mostly type-safe, thanks to generating SQL that you is fed into `connection
 
 The most dangerous class to use is `Sql`, because it's largely intended for throwing raw strings into your statements. `$( colName )` is also unsafe in the sense that whatever `colName` is will be thrown out directly to SQL. However, `$$( colName )` is a bit safer because it removes double quotes and wraps the identifier (ANSI_QUOTES mode in MySQL), at the expense of requiring the case be completely correct in most cases.
 
-### Inspirations
+#### Improvements
+There's quite a bit of improvement we could make to this.  
+`DISTINCT` isn't implemented. You can sort of implement it by modifying a column name and adding a space.  
+Lots of other things are missing, but hopefully this structure works out good.  
+
+#### Inspirations
 SQL-92/99 BNF Grammars : http://savage.net.au/SQL  
 Korma: http://sqlkorma.com  
 jOOq: http://jooq.org  
 ORMLite : http://ormlite.com  
 
-### Improvements
-There's quite a bit of improvement we could make to this.  
-`DISTINCT` isn't implemented. You can sort of implement it by modifying a column name and adding a space.  
-Lots of other things are missing, but hopefully this structure works out good.  
-
 ### Contact
-This is my first open-sourced library, but I work on lots of other things I'm happy to share. 
-Feel free to contact me:
+Feel free to contact me:  
 brianv .at. stanford.edu
 
-## Not unrealistic code examples
+## Not unrealistic code examples  
 ```java
 public static class Animal extends Table {                   // Uses class name for table
     @Schema(name = "id")         public Column pk;           // Unchecked columns
