@@ -2,15 +2,14 @@
 package org.zerorm.core;
 
 import org.zerorm.core.format.AbstractSQLFormatter;
-import org.zerorm.core.interfaces.MaybeHasAlias;
+import org.zerorm.core.interfaces.Primary;
 
 /**
  * Raw SQL. Useful for anything that's not coded in (database specific code)
  * @author bvan
  */
-public class Sql implements MaybeHasAlias {
+public class Sql extends Primary<Sql> {
     private String sql;
-    private String alias = "";
     
     public Sql(){}
     
@@ -19,45 +18,8 @@ public class Sql implements MaybeHasAlias {
     }
     
     @Override
-    public String toString(){
-        return this.sql;
-    }
-
-    @Override
-    public String alias() {
-        return alias != null ? alias : "";
-    }
-
-    @Override
-    public Sql as(String alias) {
-        this.alias = alias;
-        return this;
-    }
-    
-    public <T> T as(String alias, Class<T> clazz){
-        this.alias = alias;
-        return (T) this;
-    }
-    
-    @Override
-    public Sql asExact(String alias){
-        this.alias = '"' + alias + '"';
-        return this;
-    }
-    
-    public <T> T asExact(String alias, Class<T> clazz){
-        this.alias = '"' + alias + '"';
-        return (T) this;
-    }
-    
-    @Override
-    public String canonical(){
-        return !alias().isEmpty() ? alias : sql != null ? sql.toString() : "";
-    }
-
-    @Override
-    public String formatted(){
-        return formatted(AbstractSQLFormatter.getDefault());
+    public String getName(){
+        return sql != null ? sql : "";
     }
     
     @Override

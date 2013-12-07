@@ -14,15 +14,11 @@ import org.zerorm.core.interfaces.SimpleTable;
  * @author bvan
  */
 public class Insert extends Executable {
-
     private Table into;
-    private List<Column> columns = new ArrayList<>();
+    private final List<Column> columns = new ArrayList<>();
     private Object source;  // List or Select
     
-    /**
-     * Construct initial INSERT statement.
-     */
-    public Insert() { this.into = new Table();}
+    public Insert() { }
 
     /**
      * Construct initial INSERT statement with the table to be inserted into
@@ -58,13 +54,6 @@ public class Insert extends Executable {
         this.columns.addAll(Arrays.asList(columns));
         return this;
     }
-    
-    public Insert columns(String... columns){
-        for(String s: columns){
-            this.columns.add( new Column(s, into) );
-        }
-        return this;
-    }
 
     public List<Column> getColumns(){
         return columns;
@@ -82,25 +71,11 @@ public class Insert extends Executable {
         return this;
     }
     
-    public void dump() {
-        System.out.println(formatted());
-    }
-    
-    @Override
-    public String formatted() {
-        return formatted(AbstractSQLFormatter.getDefault());
-    }
-    
     @Override
     public String formatted(AbstractSQLFormatter fmtr) {
         return fmtr.format( this );
     }
-
-    @Override
-    public boolean hasParams() {
-        throw new UnsupportedOperationException("Not supported yet.");
-    }
-
+    
     public Object getSource(){
         return this.source;
     }

@@ -102,8 +102,6 @@ public class Select extends Executable implements SimpleTable<Select> {
             }
             return new ArrayList<>(mapList.values());
         }
-        
-        
 
         @Override
         public String formatted(){
@@ -361,23 +359,8 @@ public class Select extends Executable implements SimpleTable<Select> {
     }
 
     @Override
-    public String formatted() {
-        return formatted(AbstractSQLFormatter.getDefault());
-    }
-
-    @Override
     public String formatted(AbstractSQLFormatter fmtr) {
         return fmtr.format( this );
-    }
-    
-    @Override
-    public String toString() {
-        return formatted();
-    }
-
-    @Override
-    public boolean hasParams() {
-        return getParams().isEmpty();
     }
 
     @Override
@@ -399,10 +382,6 @@ public class Select extends Executable implements SimpleTable<Select> {
         params.addAll( having.getParams() );
 
         return params;
-    }
-
-    public void dump() {
-        System.out.println(formatted());
     }
 
     @Override

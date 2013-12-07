@@ -15,7 +15,12 @@ import org.zerorm.core.interfaces.Schema;
 import org.zerorm.core.interfaces.SimpleTable;
 
 /**
- * 
+ * A class for defining a Table. Useful at runtime or at compile time.
+ * Table(){} is finally called, either from this class or a subclass,
+ * initAnnotatedColumns will look for columns defined in this table
+ * annotated with {@link org.zerorm.core.interfaces.Schema}, and 
+ * initialize any columns that are found with the canonical name of
+ * that Column.
  * @author bvan
  */
 public class Table implements SimpleTable<Table> {
@@ -67,7 +72,7 @@ public class Table implements SimpleTable<Table> {
      * @return 
      */
     public Column getColumn(String column) {
-        return columns.containsValue(column)
+        return columns.containsKey(column)
                 ? columns.get(column)
                 : columns.put(column, new Column(column, this));
     }
@@ -82,7 +87,7 @@ public class Table implements SimpleTable<Table> {
     }
 
     /**
-     * Returns columns that have been defined
+     * @return unique columns that have been defined
      */
     public List<Column> columns() {
         List<Column> cols = new ArrayList<>();
@@ -93,10 +98,9 @@ public class Table implements SimpleTable<Table> {
         }
         return cols;
     }
-    
+
     /**
      * returns a column / new column
-     * @param column Name of Column
      * @return 
      */
     @Override
@@ -106,27 +110,23 @@ public class Table implements SimpleTable<Table> {
     
     /**
      * Construct Select statement with this table as the primary Table
-     * @param columns
-     * @return 
+     * @return new Select statement from this table
      */
     public Select select(){
         return new Select().from( this );
     }
     
     /**
-     * Construct Select statement with this table as the primary Table
-     * @param columns
-     * @return 
+     * Construct Select statement with this table as the primary Table.
+     * @return new Select statement with all columns selected.
      */
     public Select selectAllColumns(){
-        return new Select( columns() ).from( this );
+        return select().selection( columns() );
     }
 
     /**
-     * Construct Select statement with this table as the primary Table,7
-     * use the following columns for the selection.
      * @param columns
-     * @return 
+     * @return new Select statement from this table with columns as the selection
      */
     public Select select(MaybeHasAlias... columns){
         return new Select( columns ).from( this );
@@ -135,8 +135,8 @@ public class Table implements SimpleTable<Table> {
     /**
      * Construct Select statement with this table as the primary Table,
      * and all defined columns for the selection
-     * @param columns
-     * @return 
+     * @param exprs
+     * @return new Select statement
      */
     public Select where(Expr... exprs){
         return new Select( columns() ).from( this ).where( exprs );
@@ -178,7 +178,6 @@ public class Table implements SimpleTable<Table> {
     public String canonical(){
         return !alias().isEmpty() ? alias : table;
     }
-
     
     // Initiate annotated Columns
     private void initAnnotatedColumns() {

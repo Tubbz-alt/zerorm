@@ -10,6 +10,7 @@ import org.zerorm.core.interfaces.Formattable;
 /**
  *
  * @author bvan
+ * @param <T> Primitive type of this parameter (String, Date, etc...)
  */
 public class Param<T> implements Formattable {
     private String name;

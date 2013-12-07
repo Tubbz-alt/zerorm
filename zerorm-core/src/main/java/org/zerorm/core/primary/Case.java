@@ -2,15 +2,15 @@
 package org.zerorm.core.primary;
 
 import org.zerorm.core.Expr;
-import org.zerorm.core.Sql;
 import org.zerorm.core.format.AbstractSQLFormatter;
 import org.zerorm.core.interfaces.Formattable;
+import org.zerorm.core.interfaces.Primary;
 
 /**
  *
  * @author bvan
  */
-public class Case extends Sql implements Formattable {
+public class Case extends Primary<Case> {
     private Expr expression;
     private Formattable tClause;
     private Formattable eClause;
@@ -21,12 +21,12 @@ public class Case extends Sql implements Formattable {
         this.eClause = elseClause;
         this.expression.setWrapped( false );
     }
-
-    @Override
-    public String formatted(){
-        return formatted(AbstractSQLFormatter.getDefault());
-    }
     
+    @Override
+    public String getName(){
+        return "";
+    }
+
     @Override
     public String formatted(AbstractSQLFormatter fmtr){
         StringBuilder sb = new StringBuilder();
@@ -36,5 +36,4 @@ public class Case extends Sql implements Formattable {
         sb.append( " END");
         return sb.toString();
     }
-
 }

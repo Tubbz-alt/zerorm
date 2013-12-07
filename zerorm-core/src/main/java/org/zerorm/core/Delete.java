@@ -22,7 +22,7 @@ public class Delete extends Executable {
 
     /**
      * Construct initial DELETE statement with the table to be deleted from
-     * @param columns
+     * @param table
      */
     public Delete(Table table) {
         this.from = table;
@@ -73,24 +73,10 @@ public class Delete extends Executable {
     public Expr getWhere(){
         return this.where;
     }
-
-    public void dump() {
-        System.out.println(formatted());
-    }
-
-    @Override
-    public String formatted() {
-        return formatted(AbstractSQLFormatter.getDefault());
-    }
-    
+   
     @Override
     public String formatted(AbstractSQLFormatter fmtr) {
         return fmtr.format( this );
-    }
-
-    @Override
-    public boolean hasParams() {
-        return !getParams().isEmpty();
     }
 
     @Override

@@ -2,15 +2,14 @@
 package org.zerorm.core;
 
 import org.zerorm.core.format.AbstractSQLFormatter;
-import org.zerorm.core.interfaces.MaybeHasAlias;
+import org.zerorm.core.interfaces.Primary;
 
 /**
  * A basic value. Useful for user-defined columns/rows
  * @author bvan
  */
-public class Val<T> implements MaybeHasAlias<Val> {
+public class Val<T> extends Primary<Val> {
     private T value;
-    private String alias = "";
     
     public Val(){}
     
@@ -26,37 +25,14 @@ public class Val<T> implements MaybeHasAlias<Val> {
     public T getValue(){
         return this.value;
     }
-
-    @Override
-    public String alias() {
-        return alias != null ? alias : "";
-    }
-
-    @Override
-    public Val as(String alias) {
-        this.alias = alias;
-        return this;
-    }
     
     @Override
-    public Val asExact(String alias){
-        this.alias = '"' + alias + '"';
-        return this;
-    }
-    
-    @Override
-    public String canonical(){
-        return !alias().isEmpty() ? alias : value.toString();
-    }
-
-    @Override
-    public String formatted(){
-        return formatted(AbstractSQLFormatter.getDefault());
+    public String getName(){
+        return value != null ? value.toString() : "";
     }
     
     @Override
     public String formatted(AbstractSQLFormatter fmtr){
         return fmtr.format( this );
     }
-
 }

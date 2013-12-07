@@ -1,7 +1,4 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+
 package org.zerorm.core;
 
 // Ops and their sql
@@ -12,7 +9,6 @@ import org.zerorm.core.interfaces.MaybeHasAlias;
 
 /**
  * Ops and their SQL equivalence. Methods to construct boolean Expressions.
- * Expr
  * @author bvan
  */
 public enum Op {

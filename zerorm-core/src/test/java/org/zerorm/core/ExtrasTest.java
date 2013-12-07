@@ -23,7 +23,8 @@ public class ExtrasTest extends TestCase {
         Val<String> _then = new Val<>("1234");
         Val<String> _else = new Val<>("4321");
         Case _case = new Case(t1.pk.eq( 1234L), _then, _else);
-        String actual = new Select( _case ).from( t1 ).formatted();
+        String actual = new Select( _case )
+                .from( t1 ).formatted();
         check(message, expected0001, actual);
         
         String expected0002 = "SELECT CASE WHEN Table0001.pk = 1234 THEN '1234' ELSE '4321' END fakeName FROM Table0001";

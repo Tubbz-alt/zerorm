@@ -7,15 +7,15 @@ import org.zerorm.core.Param;
 import org.zerorm.core.format.AbstractSQLFormatter;
 import org.zerorm.core.interfaces.MaybeHasAlias;
 import org.zerorm.core.interfaces.MaybeHasParams;
+import org.zerorm.core.interfaces.Primary;
 
 /**
  *
  * @author bvan
  */
-public class Fn implements MaybeHasParams, MaybeHasAlias<Fn> {
+public class Fn extends Primary<Fn> implements MaybeHasParams {
     private final String function;
     private final MaybeHasAlias valueExpr;
-    private String alias = "";
 
     public static enum FnType {
         AVG, MAX, MIN, SUM, EVERY, ANY, SOME, COUNT;
@@ -53,21 +53,9 @@ public class Fn implements MaybeHasParams, MaybeHasAlias<Fn> {
         }
         return new ArrayList<>();
     }
-    
-    @Override
-    public String alias(){ return alias == null ? "" : alias; }
 
     @Override
-    public String canonical(){ return alias().isEmpty() ? valueExpr.canonical() : alias; }
-
-    @Override
-    public Fn as(String alias){ this.alias = alias; return this; }
-
-    @Override
-    public Fn asExact(String alias){ this.alias = '"' + alias + '"'; return this; }
-
-    @Override
-    public String formatted(){ return formatted(AbstractSQLFormatter.getDefault()); }
+    public String getName(){ return valueExpr.canonical(); }
     
     @Override
     public String formatted(AbstractSQLFormatter formatter){

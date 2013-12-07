@@ -4,15 +4,15 @@ package org.zerorm.core.interfaces;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
-import java.text.SimpleDateFormat;
 import java.util.Iterator;
 import org.zerorm.core.Param;
+import org.zerorm.core.format.AbstractSQLFormatter;
 
 /**
  *
  * @author bvan
  */
-public abstract class Executable implements Formattable, MaybeHasParams {
+public abstract class Executable<T> implements Formattable, MaybeHasParams {
 
     public PreparedStatement prepare(Connection conn) throws SQLException {
         String sql = formatted();
@@ -39,4 +39,22 @@ public abstract class Executable implements Formattable, MaybeHasParams {
         return stmt;
     }
     
+    public void dump() {
+        System.out.println(formatted());
+    }
+    
+    @Override
+    public String toString() {
+        return formatted();
+    }
+    
+    @Override
+    public boolean hasParams() {
+        return !getParams().isEmpty();
+    }
+    
+    @Override
+    public String formatted() {
+        return formatted(AbstractSQLFormatter.getDefault());
+    }
 }

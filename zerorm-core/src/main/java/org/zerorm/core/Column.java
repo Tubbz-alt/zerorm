@@ -6,6 +6,7 @@ import org.zerorm.core.Expr.SafeList;
 import org.zerorm.core.format.AbstractSQLFormatter;
 import org.zerorm.core.interfaces.MaybeHasAlias;
 import org.zerorm.core.interfaces.MaybeHasParams;
+import org.zerorm.core.interfaces.Primary;
 import org.zerorm.core.interfaces.SimpleTable;
 
 /**
@@ -13,10 +14,9 @@ import org.zerorm.core.interfaces.SimpleTable;
  * A column can belong to a table
  * @author bvan
  */
-public class Column<T> implements MaybeHasAlias<Column> {
+public class Column<T> extends Primary<Column> {
     private SimpleTable parent;
     private final String name;
-    private String alias = "";
     private Class<?> javaType;
     
     private Column(){this.name = "";}
@@ -79,8 +79,7 @@ public class Column<T> implements MaybeHasAlias<Column> {
         if(this.name.equals("*")){
             return this;
         }
-        this.alias = alias;
-        return this;
+        return super.as( alias );
     }
     
     @Override
@@ -90,8 +89,7 @@ public class Column<T> implements MaybeHasAlias<Column> {
         if(this.name.equals("*")){
             return this;
         }
-        this.alias = '"' + alias + '"';
-        return this;
+        return super.asExact( alias );
     }
     
     public Param<T> checkedParam(){
@@ -112,20 +110,10 @@ public class Column<T> implements MaybeHasAlias<Column> {
     public MaybeHasParams checkedParamList(String name, List value){
         return new SafeList(name, value, javaType);
     }
-
-    @Override
-    public String alias() {
-        return alias != null ? alias : "";
-    }
     
     @Override
-    public String canonical(){
-        return !alias.isEmpty() ? alias : name;
-    }
-
-    @Override
-    public String formatted() {
-        return formatted(AbstractSQLFormatter.getDefault());
+    public String toString(){
+        return name != null ? name : "";
     }
     
     @Override

@@ -7,18 +7,14 @@ import org.zerorm.core.format.AbstractSQLFormatter;
 import org.zerorm.core.interfaces.Executable;
 
 /**
- *
+ * UPDATE statement
  * @author bvan
  */
 public class Update extends Executable {
-    
     private Table target;
-    private List<Expr> clauses = new ArrayList<>();
+    private final List<Expr> clauses = new ArrayList<>();
     private Expr where = new Expr();
     
-    /**
-     * Construct initial UPDATE statement.
-     */
     public Update() { }
 
     /**
@@ -87,25 +83,11 @@ public class Update extends Executable {
         return this.where;
     }
 
-    public void dump() {
-        System.out.println(formatted());
-    }
-
-    @Override
-    public String formatted() {
-        return formatted(AbstractSQLFormatter.getDefault());
-    }
-
     @Override
     public String formatted(AbstractSQLFormatter fmtr) {
         return fmtr.format( this );
     }
     
-    @Override
-    public boolean hasParams() {
-        return !getParams().isEmpty();
-    }
-
     @Override
     public List<Param> getParams() {
         List<Param> params = new ArrayList<>();
