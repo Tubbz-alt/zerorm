@@ -1,5 +1,5 @@
 
-package org.zerorm.core.primary;
+package org.zerorm.core.primaries;
 
 import java.util.ArrayList;
 import java.util.List;

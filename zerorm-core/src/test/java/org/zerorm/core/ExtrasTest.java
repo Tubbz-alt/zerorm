@@ -5,9 +5,9 @@ import org.zerorm.core.Val;
 import org.zerorm.core.Select;
 import junit.framework.TestCase;
 import static junit.framework.TestCase.assertEquals;
-import org.zerorm.core.primary.Case;
+import org.zerorm.core.primaries.Case;
 import org.zerorm.core.model.Table0001;
-import static org.zerorm.core.primary.Fn.*;
+import static org.zerorm.core.primaries.Fn.*;
 
 /**
  *

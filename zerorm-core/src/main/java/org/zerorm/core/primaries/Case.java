@@ -1,5 +1,5 @@
 
-package org.zerorm.core.primary;
+package org.zerorm.core.primaries;
 
 import org.zerorm.core.Expr;
 import org.zerorm.core.format.AbstractSQLFormatter;
