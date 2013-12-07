@@ -20,7 +20,7 @@ I'm sure there's plenty of things I'm doing stupidly in this. Feel free to submi
     - Sometimes like defining things on the fly
       - `new Select( $("name") ).from( $("animal") ).where( $("name").eq( param ) );`
   - Readable code
-    - there's still a lot of boilerplate, sorry about that.
+    - there's still a lot of boilerplate, would love to remove lines
   - Extendable code (hopefully this works out well...)
 4. I don't like:
   - ORMs all that much
@@ -30,10 +30,12 @@ I'm sure there's plenty of things I'm doing stupidly in this. Feel free to submi
   - lots of dependencies
   - complicated code, classes over 600 lines, tons of classes
 
-It's mostly type-safer. The most dangerous class to use is `Sql`, because it's largely intended for throwing raw strings into your statements. `$( colName )` is also unsafe in the sense that whatever `colName` is will be thrown out directly to SQL. However, $$( colName ) is a bit safer because it creates the identifier wrapped in double quotes (ANSI_QUOTES mode in MySQL), at the expense of requiring the case be completely correct in most cases.
+### Type Safer
 
-This code has been inspired by (in desecending order of inspiration)
+It's mostly type-safe, but I don't guarantee it, and there's ways of overriding. The most dangerous class to use is `Sql`, because it's largely intended for throwing raw strings into your statements. `$( colName )` is also unsafe in the sense that whatever `colName` is will be thrown out directly to SQL. However, `$$( colName )` is a bit safer because it removes double quotes and wraps the identifier (ANSI_QUOTES mode in MySQL), at the expense of requiring the case be completely correct in most cases.
 
+### Inspiration
+This code has been inspired by:  
 SQL-92/99 BNF Grammars : http://savage.net.au/SQL  
 Korma: http://sqlkorma.com  
 jOOq: http://jooq.org  
