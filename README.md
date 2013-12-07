@@ -14,7 +14,7 @@ You need something for production (seriously, the maven version is 0.1-SNAPSHOT)
 1. Budgets are limited, you can't buy a new database when queries on 100m rows go slow
   - Sometimes you need to hand-tweak that SQL
   - Remember that time the RDBMS optimizer had a brain fart, and nobody told the ORM?
-2. You maybe to easily parse external Abstract Syntax Trees to SQL expressions easily
+2. You need to easily parse Abstract Syntax Trees to SQL expressions easily
   - and maybe create complex, type-safer SQL expressions
 3. You like 
   - SQL and Java
@@ -41,8 +41,7 @@ The most dangerous class to use is `Sql`, because it's largely intended for thro
 
 #### Improvements
 There's quite a bit of improvement we could make to this.  
-`DISTINCT` isn't implemented. You can sort of implement it by modifying a column name and adding a space.  
-Lots of other things are missing, but hopefully this structure works out good.  
+Things are missing from SQL-9[29], but hopefully most of it is easily implemented.  
 
 #### Inspirations
 SQL-92/99 BNF Grammars : http://savage.net.au/SQL  
