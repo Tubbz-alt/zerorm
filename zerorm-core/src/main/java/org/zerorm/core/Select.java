@@ -209,7 +209,11 @@ public class Select extends Executable implements SimpleTable<Select> {
      */
     @Override
     public List<MaybeHasAlias> getColumns() {
-        return new ArrayList<>(scope.exportedMapping.keySet());
+        List<MaybeHasAlias> exported = new ArrayList<>();
+        for(MaybeHasAlias a: scope.exportedMapping.keySet()){
+            exported.add( new Column(a.canonical(), this));
+        }
+        return exported;
     }
     
     /**
@@ -221,6 +225,11 @@ public class Select extends Executable implements SimpleTable<Select> {
         return new ArrayList<>(scope.exportedMapping.values());
     }
 
+    public Select clearSelections(){
+        scope.exportedMapping.clear();
+        return this;
+    }
+    
     /**
      * Returns any columns that currently be selected, based off of 
      * the FROM table and any joins.
@@ -240,6 +249,8 @@ public class Select extends Executable implements SimpleTable<Select> {
      */
     public Select from(SimpleTable primaryTable) {
         if (primaryTable instanceof Select) {
+            // TODO : Determine if this is really needed. In general, I think yes, as explicit 
+            // is better than implict.
             if (primaryTable.alias().isEmpty()) {
                 throw new RuntimeException("Sub-Selects must have an alias");
             }

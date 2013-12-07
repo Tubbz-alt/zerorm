@@ -174,6 +174,15 @@ public enum Op {
     }
     
     /**
+     * Create new anonymous with the canonical name of column provided
+     * @param column
+     * @return 
+     */
+    public static Column $(Column column){
+        return new Column(column.canonical(), null);
+    }
+    
+    /**
      * Return "columnName" as the colunm name.
      * @param columnName
      * @return 
