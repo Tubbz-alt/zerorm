@@ -64,12 +64,15 @@ public class ExtrasTest extends TestCase {
         
         String expected0004 = "SELECT DISTINCT Table0001.pk FROM Table0001";
         actual = t1.select( DISTINCT.of( t1.pk ) ).formatted();
-        System.out.println(actual);
         assertEquals(expected0004, actual);
         
         String expected0005 = "SELECT DISTINCT Table0001.pk avgpk FROM Table0001";
         actual = t1.select( DISTINCT.of( t1.pk ).as( "avgpk" ) ).formatted();
         assertEquals(expected0005, actual);
+        
+        String expected0006 = "SELECT DISTINCT Table0001.pk, Table0001.name FROM Table0001";
+        actual = t1.select( DISTINCT.of( t1.pk ), t1.name ).formatted();
+        assertEquals(expected0006, actual);
         
     }
     

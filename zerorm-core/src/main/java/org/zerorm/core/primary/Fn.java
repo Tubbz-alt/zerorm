@@ -17,7 +17,7 @@ public class Fn extends Primary<Fn> implements MaybeHasParams {
     private final String function;
     private final MaybeHasAlias valueExpr;
     private final String fnFormat;
-    public static final String FN_FORMAT = "%s( %s )";
+    public static final String FN_DEFAULT_FMT = "%s( %s )";
     
     public static final Fn AVG = new Fn( "AVG" );
     public static final Fn MAX = new Fn( "MAX" );
@@ -30,7 +30,7 @@ public class Fn extends Primary<Fn> implements MaybeHasParams {
     public static final Fn DISTINCT = new Fn( "DISTINCT", "%s %s" );
     
     private Fn(String function){
-        this.fnFormat = FN_FORMAT;
+        this.fnFormat = FN_DEFAULT_FMT;
         this.function = function;
         this.valueExpr = null;
     }
@@ -52,7 +52,7 @@ public class Fn extends Primary<Fn> implements MaybeHasParams {
     }
     
     public static Primary<Fn> of(String function, MaybeHasAlias col){
-        return new Fn(function, col, FN_FORMAT);
+        return new Fn(function, col, FN_DEFAULT_FMT);
     }
     
     public MaybeHasAlias getValueExpression(){
