@@ -4,8 +4,10 @@ package org.zerorm.core;
 import org.zerorm.core.Val;
 import org.zerorm.core.Select;
 import junit.framework.TestCase;
+import static junit.framework.TestCase.assertEquals;
 import org.zerorm.core.primary.Case;
 import org.zerorm.core.model.Table0001;
+import static org.zerorm.core.primary.Fn.*;
 
 /**
  *
@@ -43,6 +45,22 @@ public class ExtrasTest extends TestCase {
         actual = new Select( _case ).from( t1 ).formatted();
         check(message, expected0004, actual);
 
+    }
+    
+    public void testFunctions(){
+        Table0001 t1 = new Table0001();
+        
+        String expected0001 = "SELECT AVG( Table0001.pk ) FROM Table0001";
+        String actual = t1.select( AVG.of( t1.pk ) ).formatted();
+        assertEquals(expected0001, actual);
+        
+        String expected0002 = "SELECT AVG( Table0001.pk ) FROM Table0001";
+        actual = t1.select( AVG.of( t1.pk.as( "FAIL") ) ).formatted();
+        assertEquals(expected0002, actual);
+
+        String expected0003 = "SELECT AVG( Table0001.pk ) avgpk FROM Table0001";
+        actual = t1.select( AVG.of( t1.pk ).as( "avgpk" ) ).formatted();
+        assertEquals(expected0003, actual);
     }
     
     void check(String message, String expected, String actual){

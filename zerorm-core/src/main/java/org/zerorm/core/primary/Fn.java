@@ -16,25 +16,31 @@ import org.zerorm.core.interfaces.Primary;
 public class Fn extends Primary<Fn> implements MaybeHasParams {
     private final String function;
     private final MaybeHasAlias valueExpr;
-
-    public static enum FnType {
-        AVG, MAX, MIN, SUM, EVERY, ANY, SOME, COUNT;
-        
-        public Fn of(MaybeHasAlias col){
-            return new Fn(this.name(), col);
-        }
+    
+    public static final Fn AVG = new Fn( "AVG" );
+    public static final Fn MAX = new Fn( "MAX" );
+    public static final Fn MIN = new Fn( "MIN" );
+    public static final Fn SUM = new Fn( "SUM" );
+    public static final Fn EVERY = new Fn( "EVERY" );
+    public static final Fn ANY = new Fn( "ANY" );
+    public static final Fn SOME = new Fn( "SOME" );
+    public static final Fn COUNT = new Fn( "COUNT" );
+    
+    private Fn(String function){
+        this.function = function;
+        this.valueExpr = null;
     }
     
-    public Fn(String function, MaybeHasAlias col){
+    private Fn(String function, MaybeHasAlias col){
         this.function = function;
         this.valueExpr = col;
     }
     
-    public static Fn of(FnType fnType, MaybeHasAlias col){
-        return new Fn(fnType.name(), col);
+    public Primary<Fn> of(MaybeHasAlias col){
+        return new Fn(this.function, col);
     }
     
-    public static Fn of(String function, MaybeHasAlias col){
+    public static Primary<Fn> of(String function, MaybeHasAlias col){
         return new Fn(function, col);
     }
     
@@ -61,5 +67,5 @@ public class Fn extends Primary<Fn> implements MaybeHasParams {
     public String formatted(AbstractSQLFormatter formatter){
         return function + "( " + valueExpr.formatted( formatter ) + " )";
     }
-
+    
 }
