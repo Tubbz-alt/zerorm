@@ -44,11 +44,6 @@ public abstract class Executable<T> implements Formattable, MaybeHasParams {
     }
     
     @Override
-    public String toString() {
-        return formatted();
-    }
-    
-    @Override
     public boolean hasParams() {
         return !getParams().isEmpty();
     }
