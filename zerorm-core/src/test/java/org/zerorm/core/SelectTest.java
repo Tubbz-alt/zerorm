@@ -4,7 +4,6 @@
  */
 package org.zerorm.core;
 
-import org.zerorm.core.Select;
 import junit.framework.TestCase;
 import org.zerorm.core.format.PrettyFormatter;
 import org.zerorm.core.model.Table0001;
@@ -46,7 +45,7 @@ public class SelectTest extends TestCase {
         Select uni = Select.unionAll( t0001.selectAllColumns(), t0001x.selectAllColumns());
         actual = new Select( uni.as( "t1_t1x").getColumns() )
                 .from( uni )
-                .where( uni.getSelection( "pk" ).eq( 1234L))
+                .where( uni.$("pk").eq( 1234L) )
                 .formatted();
         check(msg, expected0003, actual);
         

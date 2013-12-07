@@ -5,6 +5,7 @@ import org.zerorm.core.Expr;
 import org.zerorm.core.Val;
 import java.util.Arrays;
 import java.util.HashMap;
+import java.util.Map.Entry;
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
@@ -17,9 +18,12 @@ import org.zerorm.core.Sql;
 import org.zerorm.core.Select;
 import org.zerorm.core.Table;
 import static org.zerorm.core.Op.*;
+import org.zerorm.core.Select.JoinExpr;
 import org.zerorm.core.Update;
 import org.zerorm.core.format.AbstractSQLFormatter;
 import org.zerorm.core.interfaces.Schema;
+import org.zerorm.core.interfaces.SimpleTable;
+import static org.zerorm.core.primaries.Fn.DISTINCT;
 
 /**
  * Unit test for simple App.
@@ -104,6 +108,21 @@ public class AnimalTest
         nameParam.setValue( "Spike" );
         actual = pid_x.formatted();  // Only Spike is bound
         assertEquals( expected0003, actual );
+        
+        String expected0004 = "SELECT DISTINCT pet.name, Animal.id, Animal.species, Animal.subspecies FROM Animal JOIN pet ON ( Animal.id = pet.type )";
+        Select apstmt = animalPet_t();
+        Select distinctNames = new Select( DISTINCT.of( pet_t.name ) )
+                .selection( apstmt.getSelections() )
+                .from( apstmt.getFrom() );
+        distinctNames.setJoins( apstmt.getJoins() );
+        assertEquals( expected0004, distinctNames.formatted() );
+        
+        distinctNames = animalPet_t()
+                .clearSelections()
+                .selection( DISTINCT.of( pet_t.name ) )
+                .selection( anml_t.getColumns() );
+        assertEquals( expected0004, distinctNames.formatted() ); 
+        
     }
 
     public void testExtinctPets(){
