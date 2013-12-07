@@ -48,6 +48,11 @@ public abstract class Primary<T> implements MaybeHasAlias<T>{
     public abstract String getName();
     
     @Override
+    public String toString(){
+        return getName();
+    }
+    
+    @Override
     public String canonical(){
         return !alias.isEmpty() ? alias : getName();
     }
