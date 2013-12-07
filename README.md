@@ -1,10 +1,11 @@
 0RM (or ZeroRM)
 ======
-You should use this if you don't want to use an ORM, but you do want some semblance of DRY.  
-It's also useful for mapping Abstract Syntax Trees to SQL Expressions.  
-You want something that's *type safer* for dynamically generating SQL.
+##### You should use this if you don't want to use an ORM, but you do want some semblance of DRY.  
+##### You want something that's *type safer* for dynamically generating SQL.
+##### It's also useful for mapping Abstract Syntax Trees to SQL Expressions.  
+##### You should not use this for production (*yet*)
 
-I'm sure there's plenty of things I'm doing stupidly in this. Feel free to submit pull requests.
+##### I'm sure there's plenty of things I'm doing stupidly in this. Feel free to submit pull requests.
 
 # Why?
 
@@ -22,20 +23,21 @@ I'm sure there's plenty of things I'm doing stupidly in this. Feel free to submi
   - Readable code
     - there's still a lot of boilerplate, would love to remove lines
   - Extendable code (hopefully this works out well...)
-4. I don't like:
+4. You don't like:
   - ORMs all that much
-  - `stmt.setLong(1, 1234L)`, `stmt.setXXX(2, something)`, etc...
-    - You've got your own custom mappers anyhow.
+  - Or this: `stmt.setLong(1, 1234L)`, `stmt.setXXX(2, something)`
+    - But you've got your own custom mappers anyhow.
   - huge jars
   - lots of dependencies
-  - complicated code, classes over 600 lines, tons of classes
+  - complicated code, too man LoC, etc...
 
 ### Type Safer
 
-It's mostly type-safe, but I don't guarantee it, and there's ways of overriding. The most dangerous class to use is `Sql`, because it's largely intended for throwing raw strings into your statements. `$( colName )` is also unsafe in the sense that whatever `colName` is will be thrown out directly to SQL. However, `$$( colName )` is a bit safer because it removes double quotes and wraps the identifier (ANSI_QUOTES mode in MySQL), at the expense of requiring the case be completely correct in most cases.
+It's mostly type-safe, thanks to generating SQL that you is fed into `connection.prepareStatement()`.  
 
-### Inspiration
-This code has been inspired by:  
+The most dangerous class to use is `Sql`, because it's largely intended for throwing raw strings into your statements. `$( colName )` is also unsafe in the sense that whatever `colName` is will be thrown out directly to SQL. However, `$$( colName )` is a bit safer because it removes double quotes and wraps the identifier (ANSI_QUOTES mode in MySQL), at the expense of requiring the case be completely correct in most cases.
+
+### Inspirations
 SQL-92/99 BNF Grammars : http://savage.net.au/SQL  
 Korma: http://sqlkorma.com  
 jOOq: http://jooq.org  
@@ -145,6 +147,7 @@ SELECT Animal.id, Animal.species, Animal.subspecies
   JOIN pet ON ( Animal.id = pet.type ) 
   WHERE pet.status NOT IN (?,?,?);                -- ('SLEEPING','AWAKE','IN_UTERO')
 ```
+
 
 ## Current version
 
