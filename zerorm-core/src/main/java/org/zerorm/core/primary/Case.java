@@ -30,7 +30,7 @@ public class Case extends Sql implements Formattable {
     @Override
     public String formatted(AbstractSQLFormatter fmtr){
         StringBuilder sb = new StringBuilder();
-        sb.append( "CASE WHEN ").append( expression.formatted( fmtr, true ) );
+        sb.append( "CASE WHEN ").append( expression.formatted( fmtr ) );
         sb.append( " THEN " ).append( tClause.formatted() );
         sb.append( " ELSE " ).append( eClause.formatted() );
         sb.append( " END");

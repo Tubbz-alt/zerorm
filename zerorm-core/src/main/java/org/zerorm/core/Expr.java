@@ -224,20 +224,12 @@ public class Expr implements MaybeHasParams, Formattable {
     
     @Override
     public String formatted(){
-        return formatted(AbstractSQLFormatter.getDefault(), false);
-    }
-    
-    public String formatted(boolean aliased) {
-        return formatted(AbstractSQLFormatter.getDefault(), aliased);
+        return formatted(AbstractSQLFormatter.getDefault());
     }
     
     @Override
     public String formatted(AbstractSQLFormatter fmtr) {
-        return fmtr.format( this, false );
-    }
-    
-    public String formatted(AbstractSQLFormatter fmtr, boolean aliased) {
-        return fmtr.format( this, aliased );
+        return fmtr.format( this );
     }
     
     public boolean isWrapped(){

@@ -84,11 +84,11 @@ public class SQLFormatter extends AbstractSQLFormatter {
         sql.append( aliased( stmt.getFrom().formatted(this), stmt.getFrom()) );
         sql.append( format( stmt.getJoins() ) );
         if(!stmt.getWhere().isEmpty()){
-            sql.append( " WHERE " ).append( format(stmt.getWhere(), true ) );
+            sql.append( " WHERE " ).append( format(stmt.getWhere() ) );
         }
         sql.append( formatColumns( stmt.getGroupBys()," GROUP BY", false) );
         if(!stmt.getHaving().isEmpty()){
-            sql.append( " HAVING " ).append( format(stmt.getHaving(), true ) );
+            sql.append( " HAVING " ).append( format(stmt.getHaving() ) );
         }
         sql.append( formatColumns( stmt.getOrderBys()," ORDER BY", false) );
         return stmt.getWrapped() ? "( " + sql.toString() + " )" : sql.toString();
@@ -107,11 +107,11 @@ public class SQLFormatter extends AbstractSQLFormatter {
         for(Iterator<Expr> iter =  stmt.getClauses().iterator(); iter.hasNext();){
             Expr e = iter.next();
             e.setWrapped( false );
-            sql.append( format(e, false) ).append( iter.hasNext() ? ", ":"");
+            sql.append( format(e) ).append( iter.hasNext() ? ", ":"");
         }
         
         if (!stmt.getWhere().isEmpty()) {
-            sql.append( " WHERE " ).append( format( stmt.getWhere(), true ) );
+            sql.append( " WHERE " ).append( format( stmt.getWhere() ) );
         }
 
         return sql.toString();
@@ -123,7 +123,7 @@ public class SQLFormatter extends AbstractSQLFormatter {
         sql.append( "DELETE FROM " );
         sql.append( stmt.getFrom().getTable() );
         if (!stmt.getWhere().isEmpty()) {
-            sql.append( " WHERE "  ).append( format(stmt.getWhere(), true ) );
+            sql.append( " WHERE "  ).append( format(stmt.getWhere() ) );
         } else if(stmt.getProtected()){
             throw new RuntimeException("Cannot DELETE all from an unprotected table");
         }
@@ -151,7 +151,7 @@ public class SQLFormatter extends AbstractSQLFormatter {
             }
 
             canonicals.add( aliased ? selection.canonical() : ((Column) selection).getName() );
-            String fmt = selection instanceof Column ? format(((Column) selection), true ) 
+            String fmt = selection instanceof Column ? format(((Column) selection) ) 
                     : selection.formatted(this);
             sql.append( aliased ? aliased(fmt, selection) : selection.formatted(this) );
             sql.append( i1.hasNext() ? ", " : "" );
@@ -160,18 +160,15 @@ public class SQLFormatter extends AbstractSQLFormatter {
     }
     
     @Override
-    public String format(Column col, boolean aliased){
+    public String format(Column col){
         StringBuilder s = new StringBuilder();
         SimpleTable parent = col.getParent();
-        if(aliased){
-            // If there's an alias, check the parent
-            if(parent != null){
-                s.append( parent.canonical()).append( "." );
-            }
+        // If the parent isn't null, add the name
+        if(parent != null){
+            s.append( parent.canonical() ).append( "." );
         }
         s.append( col.getName() );
         return s.toString();
-
     }
     
     @Override
@@ -195,7 +192,7 @@ public class SQLFormatter extends AbstractSQLFormatter {
             jc = iter.next();
             sql.append( " " ).append( jc.getKey().op() ).append( " " );
             sql.append( aliased(jc.getValue().formatted(this), jc.getValue()) ).append( " ON " );
-            sql.append( format( jc.getKey().test(), true ) );
+            sql.append( format( jc.getKey().test() ) );
         }
         return sql.toString();
     }
@@ -211,36 +208,31 @@ public class SQLFormatter extends AbstractSQLFormatter {
         return value.toString();
     }
     
-    @Override
-    public String format(Expr expr, boolean aliased){
+
+    public String format(Expr expr){
         StringBuilder s = new StringBuilder();
         if(expr.isEmpty()){ return s.toString(); }
-        s.append( formatExprForSqlString( expr.getLeft(), aliased ));
-        s.append( formatExprForSqlString( expr.getOp(), aliased ));
-        s.append( formatExprForSqlString( expr.getRight(), aliased ));
+        s.append( formatExprForSqlString( expr.getLeft() ));
+        s.append( formatExprForSqlString( expr.getOp()));
+        s.append( formatExprForSqlString( expr.getRight() ));
         
         return expr.isWrapped() ? "( " + s.toString() + " )" : s.toString();
     }
     
-    private String formatExprForSqlString(Object token, boolean aliased){
+    private String formatExprForSqlString(Object token){
         if(token == null){
             return "";
         }
         if(token instanceof Op){ return " " + token.toString() + " "; }
-        return formatAsSafeString(token, true);
+        return formatAsSafeString(token);
     }
     
     @Override
     public String formatAsSafeString(Object value){
-        return formatAsSafeString(value, false);
-    };
-    
-    @Override
-    public String formatAsSafeString(Object value, boolean aliased){
         if(value instanceof Expr){
-            return format((Expr) value, aliased) ;
+            return format((Expr) value) ;
         } else if(value instanceof Column){
-            return format((Column) value, aliased) ;
+            return format((Column) value ) ;
         } else if(value instanceof Formattable){
             return ((Formattable) value).formatted(this);
         } else if(value instanceof String){

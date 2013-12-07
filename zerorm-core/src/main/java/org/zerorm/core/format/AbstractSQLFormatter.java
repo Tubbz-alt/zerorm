@@ -60,11 +60,8 @@ public abstract class AbstractSQLFormatter {
     public abstract String format(Delete stmt);
     public abstract String format(Param param);
     public abstract String format(Val val);
-    
     public String format(Sql sql){ return sql.toString(); }
-    
-    public abstract String format(Column col, boolean aliased);
-    public abstract String format(Expr expr, boolean aliased);
+    public abstract String format(Column col);
+    public abstract String format(Expr expr);
     public abstract String formatAsSafeString(Object value);
-    public abstract String formatAsSafeString(Object value, boolean aliased);
 }

@@ -125,18 +125,14 @@ public class Column<T> implements MaybeHasAlias<Column> {
 
     @Override
     public String formatted() {
-        return formatted(AbstractSQLFormatter.getDefault(), true);
+        return formatted(AbstractSQLFormatter.getDefault());
     }
     
     @Override
     public String formatted(AbstractSQLFormatter fmtr) {
-        return formatted(fmtr, true);
+        return fmtr.format( this );
     }
-    
-    public String formatted(AbstractSQLFormatter fmtr, boolean aliased) {
-        return fmtr.format( this, aliased );
-    }
-    
+        
     public Class<?> getJavaType(){
         return this.javaType;
     }
