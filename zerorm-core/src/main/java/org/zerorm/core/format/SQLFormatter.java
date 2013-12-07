@@ -164,7 +164,7 @@ public class SQLFormatter extends AbstractSQLFormatter {
         StringBuilder s = new StringBuilder();
         SimpleTable parent = col.getParent();
         // If the parent isn't null, add the name
-        if(parent != null){
+        if(parent != null && !parent.canonical().isEmpty()){
             s.append( parent.canonical() ).append( "." );
         }
         s.append( col.getName() );
