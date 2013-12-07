@@ -95,6 +95,16 @@ public void testExampleJoins(){
     nameParam.setValue( "Lucy" ); 
     nameParam.setValue( "Spike" );
     
+    // How this might play out...
+    try(PreparedStatement stmt = animalsNamed.prepareAndBind( getConnection() ){
+      ResultSet rs = stmt.executeQuery();
+      while(rs.next(){
+        // do Something fancy
+      }
+    } catch (SQLException ex){ 
+      /* nah, our pet database is purrfect */ 
+    }
+    
     // Redefine selections at runtime
     Select distNames = animalPet()
         .clearSelections()
@@ -105,15 +115,16 @@ public void testExampleJoins(){
     Select dn = new Select( distNames.getColumns() )        /* 4 */
         .from( distNames.as("dn") );
     
-    // How this might play out...
-    try(PreparedStatement stmt = animalsNamed.prepareAndBind( getConnection() ){
-      ResultSet rs = stmt.executeQuery();
-      while(rs.next(){
-        // do Something fancy
-      }
-    } catch (SQLException ex){ 
-      /* nah, our pet database is purrfect */ 
-    }
+    // Add hooks that will be executed before the SQL is compiled
+    Select stageFirst = new Select(){
+            @Override
+            public String formatted(){
+               fillTempTableFirst();
+               setupComplexTransaction();
+               return super.formatted(); 
+            }
+        }.selection( $("externalKey") )
+        .from( "tempTable" );
 }
 
 // Animals who have died in captivity...
@@ -155,12 +166,11 @@ SELECT Animal.id, Animal.species, Animal.subspecies
   WHERE pet.name = ?;                             -- 'SPIKE'
 
 -- 4
-SELECT dn.name, dn.id, dn.species, 
-    dsNames.subspecies 
-    FROM  ( SELECT DISTINCT pet.name, Animal.id, 
-          Animal.species, Animal.subspecies 
-          FROM Animal 
-          JOIN pet ON ( Animal.id = pet.type ) ) dn
+SELECT dn.name, dn.id, dn.species, dn.subspecies 
+  FROM  ( SELECT DISTINCT pet.name, Animal.id, 
+    Animal.species, Animal.subspecies 
+    FROM Animal 
+    JOIN pet ON ( Animal.id = pet.type ) ) dn
 
 -- 5
 SELECT Animal.id, Animal.species, Animal.subspecies 
