@@ -61,7 +61,7 @@ public class Column<T> extends Primary<Column> {
     }
     
     public String getName(){
-        return name;
+        return name != null ? name : "";
     }
     
     
@@ -109,11 +109,6 @@ public class Column<T> extends Primary<Column> {
     
     public MaybeHasParams checkedParamList(String name, List value){
         return new SafeList(name, value, javaType);
-    }
-    
-    @Override
-    public String toString(){
-        return name != null ? name : "";
     }
     
     @Override
