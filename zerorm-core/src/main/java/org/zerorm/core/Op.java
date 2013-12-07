@@ -168,4 +168,27 @@ public enum Op {
         return new Expr(from, Op.NOT_NULL, null);
     }
     
+    /**
+     * Magic function to turn a string into a column.
+     * Use wisely
+     * @param columnName
+     * @return 
+     */
+    public static Column $(String columnName){
+        return new Column(columnName, null);
+    }
+    
+    /**
+     * Magic function to turn a var arg of strings into a columns.
+     * Use wisely
+     * @param colNames
+     * @return 
+     */
+    public static Column[] $(String... colNames){
+        Column[] clist = new Column[colNames.length];
+        for(int i = 0; i < clist.length; i++){
+            clist[i] = new Column(colNames[i], null);
+        }
+        return clist;
+    }
 }

@@ -8,6 +8,7 @@ import org.zerorm.core.Param;
 import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static org.zerorm.core.Op.$;
 
 import static org.zerorm.core.Op.or;
 import org.zerorm.core.format.SQLFormatter;
@@ -75,7 +76,7 @@ public class Example {
         
         pselect.dump();
         
-        new ProcessInstanceExt_t().select("Stream","StreamStatus").dump();
+        new ProcessInstanceExt_t().select($("Stream", "StreamStatus")).dump();
 
         try {
             SQLFormatter.getDefault().setDebugParams( true );

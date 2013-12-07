@@ -164,7 +164,7 @@ public class Select extends Executable implements SimpleTable<Select> {
      * Objects may be either a String or of type MaybeHasAlias
      * @param columns
      */
-    public Select(Object... columns) {
+    public Select(MaybeHasAlias... columns) {
         checkSelections( Arrays.asList( columns ) );
     }
     
@@ -178,7 +178,7 @@ public class Select extends Executable implements SimpleTable<Select> {
      * @param columns
      * @return
      */
-    public Select selection( Object... columns ) {
+    public Select selection( MaybeHasAlias... columns ) {
         return checkSelections( Arrays.asList( columns ) );
     }
     
@@ -200,7 +200,7 @@ public class Select extends Executable implements SimpleTable<Select> {
      * @param column Name of Column
      * @return 
      */
-    public Column _(String column) {
+    public Column $(String column) {
         return getSelection(column);
     }
     

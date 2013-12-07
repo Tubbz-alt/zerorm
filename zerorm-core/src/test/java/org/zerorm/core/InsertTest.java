@@ -54,7 +54,7 @@ public class InsertTest extends TestCase {
         Column cSel = t0001.name;
         
         actual = new Insert().into( new Table("Table0001_Names") )
-                .columns( t1n._( "name") )
+                .columns( t1n.$( "name") )
                 .source( t0001.select( cSel ) )
                 .formatted();
         check(misMatch, expected0006, actual);
@@ -62,7 +62,7 @@ public class InsertTest extends TestCase {
         String expected0007 = "INSERT INTO Table0001_Names ( name ) SELECT alias0001.name nAlias FROM Table0001 alias0001";
         Select sel0001 = t0001.select( cSel.as( "nAlias") );
         actual = new Insert().into( new Table("Table0001_Names") )
-                .columns( t1n._( "name") )
+                .columns( t1n.$( "name") )
                 .source( sel0001 )
                 .formatted();
         check(misMatch, expected0007, actual);
@@ -71,7 +71,7 @@ public class InsertTest extends TestCase {
         String expected0008 = "INSERT INTO Table0001_Names ( name ) SELECT alias0001.name nAlias FROM Table0001 alias0001";
         t1n = new Table("Table0001_Names");
         actual = new Insert().into( new Table("Table0001_Names") )
-                .columns( t1n._( "name") )
+                .columns( t1n.$( "name") )
                 .source( sel0001.as( "alias0001x") )
                 .formatted();
         check(misMatch, expected0008, actual);

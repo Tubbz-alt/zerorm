@@ -67,12 +67,12 @@ public class AnimalTest
 
         String s001_expected = "SELECT * FROM pet";
         System.out.println( "Test s001, expected: " + s001_expected );
-        Select s001 = (new Select( "*" ).from( new AnimalInstance() )).as( "pi" );
+        Select s001 = (new Select( $("*") ).from( new AnimalInstance() )).as( "pi" );
         assertTrue( "Got: " + s001.formatted(), s001.formatted().equals( s001_expected ) );
 
         String s002_expected = "SELECT * FROM ( SELECT * FROM pet ) pi";
         System.out.println( "Test s002, expected: " + s002_expected );
-        Select s002 = new Select( "*" ).from( s001 );
+        Select s002 = new Select( $("*") ).from( s001 );
         assertTrue( "Got: " + s002.formatted(), s002.formatted().equals( s002_expected ) );
 
         AbstractSQLFormatter.getDefault().setDebugParams( true );
@@ -106,15 +106,14 @@ public class AnimalTest
         assertEquals( expected0003, actual );
     }
 
-    public void testNotExtinctAnimals(){
+    public void testExtinctPets(){
         ArrayList<String> aliveStates = new ArrayList<>();
         aliveStates.add( "SLEEPING" );
         aliveStates.add( "AWAKE" );
         aliveStates.add( "IN_UTERO" );
-        
-        String expected =  "SELECT Animal.id, Animal.species, Animal.subspecies FROM Animal JOIN pet ON ( Animal.id = pet.type ) WHERE pet.status IN (?,?,?)";
+        String expected =  "SELECT Animal.id, Animal.species, Animal.subspecies FROM Animal JOIN pet ON ( Animal.id = pet.type ) WHERE pet.status NOT IN (?,?,?)";
         Select running = animalPet_t()
-                .where( pet_t.status.in( aliveStates ) );
+                .where( pet_t.status.not_in( aliveStates ) );
         assertEquals(expected, running.formatted());
     }
 

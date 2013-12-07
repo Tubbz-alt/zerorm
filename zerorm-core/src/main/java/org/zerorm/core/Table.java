@@ -77,7 +77,7 @@ public class Table implements SimpleTable<Table> {
      * @param column Name of Column
      * @return 
      */
-    public Column _(String column) {
+    public Column $(String column) {
         return getColumn(column);
     }
 
@@ -129,15 +129,6 @@ public class Table implements SimpleTable<Table> {
      * @return 
      */
     public Select select(MaybeHasAlias... columns){
-        return new Select( columns ).from( this );
-    }
-    
-    /**
-     * Construct Select statement with this table as the primary Table
-     * @param columns
-     * @return 
-     */
-    public Select select(String... columns){
         return new Select( columns ).from( this );
     }
     
