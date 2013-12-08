@@ -16,7 +16,7 @@ import org.zerorm.core.interfaces.SimpleTable;
  */
 public class Column<T> extends Primary<Column> {
     private SimpleTable parent;
-    private final String name;
+    private String name;
     private Class<?> javaType;
     
     private Column(){this.name = "";}
@@ -53,6 +53,10 @@ public class Column<T> extends Primary<Column> {
     
     public String getName(){
         return name != null ? name : "";
+    }
+    
+    public void setName(String name){
+        this.name = name;
     }
     
     public SimpleTable getParent(){
