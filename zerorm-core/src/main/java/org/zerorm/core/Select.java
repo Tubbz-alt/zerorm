@@ -314,7 +314,7 @@ public class Select extends Executable implements SimpleTable<Select> {
      * @return 
      */
     public Select where(Expr... predicates){
-        where = Expr.collapse( where, predicates );
+        where = Expr.reduce(Op.AND, false, where, predicates );
         return this;
     }
     
@@ -342,7 +342,7 @@ public class Select extends Executable implements SimpleTable<Select> {
      * @return 
      */
     public Select having(Expr... predicates){
-        having = Expr.collapse( having, predicates );
+        having = Expr.reduce( Op.AND, false, having, predicates );
         return this;
     }
     

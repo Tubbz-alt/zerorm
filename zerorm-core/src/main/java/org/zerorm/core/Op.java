@@ -8,6 +8,10 @@ import org.zerorm.core.interfaces.MaybeHasAlias;
 /**
  * Ops and their SQL equivalence. Methods to construct boolean Expressions.
  * Additional static shorthand methods to construct Columns or Tables
+ * For simplicity, we do not distinguish between boolean expressions (c1 = 'hello') and 
+ * and value expressions ('hello' || ' ' || 'world').
+ * So, If a numeric/string value expression (+ - / * ||) is not part of a boolean expression,
+ * and it is formatted for a WHERE statement, your SQL will fail.
  * @author bvan
  */
 public enum Op {
@@ -40,7 +44,12 @@ public enum Op {
     /** {@literal 'IS NOT NULL'} */
     NOT_NULL("IS NOT NULL"), 
     EXISTS("EXISTS"), 
-    NOT_EXISTS("NOT EXISTS");
+    NOT_EXISTS("NOT EXISTS"),
+    PLUS("+"),
+    MINUS("-"),
+    DIVIDED("/"),
+    TIMES("*"),
+    CONCAT("||");
     
     private String sql;
 
@@ -161,6 +170,26 @@ public enum Op {
 
     public static Expr not_null(Object from) {
         return new Expr(from, Op.NOT_NULL, null);
+    }
+    
+    public static Expr plus(Object term1, Object term2) {
+        return new Expr(term1, Op.PLUS, term2);
+    }
+    
+    public static Expr minus(Object term1, Object term2) {
+        return new Expr(term1, Op.MINUS, term2);
+    }
+    
+    public static Expr times(Object term1, Object term2) {
+        return new Expr(term1, Op.TIMES, term2);
+    }
+    
+    public static Expr divided(Object term1, Object term2) {
+        return new Expr(term1, Op.DIVIDED, term2);
+    }
+    
+    public static Expr concat(Object term1, Object term2) {
+        return new Expr(term1, Op.CONCAT, term2);
     }
     
     /**

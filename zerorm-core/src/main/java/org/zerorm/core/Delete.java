@@ -50,7 +50,7 @@ public class Delete extends Executable {
      * @return 
      */
     public Delete where(Expr... predicates) {
-        where = Expr.collapse( where, predicates );
+        where = Expr.reduce(Op.AND, false, where, predicates );
         return this;
     }
     

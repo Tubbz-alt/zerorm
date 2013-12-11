@@ -123,52 +123,40 @@ public class Expr implements MaybeHasParams, Formattable {
     }
         
     public static Expr or(Expr... exprs) {
-        Expr reduced = exprs[0];
-        for(int i = 1; i < exprs.length; i++){
-            reduced = new Expr(reduced, Op.OR, exprs[i], false);
-        }
-        reduced.wrapped = true;
-        return reduced;
+        return reduce(Op.OR, true, new Expr(), exprs);
     }
 
     public static Expr and(Expr... exprs) {
-        Expr reduced = exprs[0];
-        for(int i = 1; i < exprs.length; i++){
-            reduced = new Expr(reduced, Op.AND, exprs[i], false);
-        }
-        reduced.wrapped = true;
-        return reduced;
+        return reduce(Op.AND, true, new Expr(), exprs);
     }
-    
-    public static Expr collapse(Expr expr1, Expr... exprs){
-        if(exprs.length == 1 && exprs[0] != null){
-            if(expr1.isEmpty() || expr1 == null){
-                expr1 = Expr.and( exprs );
-            } else {
-                expr1 = Expr.and( expr1, Expr.and( exprs ) );
+
+    public static Expr reduce(Op op, boolean wrap, Expr initial, Expr... exprs){
+        Expr red = initial == null ? new Expr() : initial;
+        for(int i = 0; i < exprs.length; i++){
+            Expr neue = exprs[i];
+            if(neue != null && !neue.isEmpty()){
+                red = red.isEmpty() ? neue : new Expr( red, op, neue, false );
             }
-            expr1.setWrapped( false );
         }
-        return expr1;
+        red.wrapped = wrap;
+        return red;
     }
     
     public List getValues(){
         ArrayList vals = new ArrayList();
-        if(tLeft != null){
-            if(tLeft instanceof Expr){
-                vals.addAll( ((Expr) tLeft).getValues());
-            } else {
-                vals.add(tLeft);
-            }
-        }
-        if(tRight != null){
-            if(tRight instanceof Expr){
-                vals.addAll( ((Expr) tRight).getValues());
-            } else {
-                vals.add(tRight);
-            }
-        }
+        checkAndAddValues(tLeft, vals);
+        checkAndAddValues(tRight, vals);
         return vals;
+    }
+    
+    private void checkAndAddValues(Object object, List vals){
+        if(object != null){
+            if(object instanceof Expr){
+                vals.addAll( ((Expr) object).getValues());
+            } else {
+                vals.add(object);
+            }
+        }
     }
     
     public Object getLeft(){
