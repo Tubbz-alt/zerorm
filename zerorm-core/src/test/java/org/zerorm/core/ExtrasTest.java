@@ -1,13 +1,11 @@
 
 package org.zerorm.core;
 
-import org.zerorm.core.Val;
-import org.zerorm.core.Select;
 import junit.framework.TestCase;
-import static junit.framework.TestCase.assertEquals;
 import org.zerorm.core.primaries.Case;
 import org.zerorm.core.model.Table0001;
 import static org.zerorm.core.primaries.Fn.*;
+import org.zerorm.core.primaries.ValExpr;
 
 /**
  *
@@ -74,6 +72,38 @@ public class ExtrasTest extends TestCase {
         actual = t1.select( DISTINCT.of( t1.pk ), t1.name ).formatted();
         assertEquals(expected0006, actual);
         
+    }
+    
+    public void testValueExpr(){
+        String message = "Value Expression mismatch: expected '%s', actual '%s'";
+        
+        Table0001 t1 = new Table0001();
+        
+        String expected0001 = "SELECT ( 'Name: ' || Table0001.name ) FROM Table0001";
+        Val<String> _name = new Val<>("Name: ");
+        ValExpr expr = new ValExpr( Op.concat( _name, t1.name) );
+        String actual = new Select( expr )
+                .from( t1 ).formatted();
+        check(message, expected0001, actual);
+        
+        _name = new Val<>("Name: ").as( "name");
+        expr = new ValExpr( Op.concat( _name, t1.name.as( "error")) );
+        actual = new Select( expr )
+                .from( t1 ).formatted();
+        check(message, expected0001, actual);
+        
+        String expected0002 = "SELECT ( 'Name: ' || Table0001.name ) vname FROM Table0001";
+        _name = new Val<>("Name: ").as( "name");
+        expr = new ValExpr( Op.concat( _name, t1.name) ).as( "vname");
+        actual = new Select( expr )
+                .from( t1 ).formatted();
+        check(message, expected0002, actual);
+        
+        String expected0003 = "SELECT ( 'Name: ' || t1.name ) FROM Table0001 t1";
+        expr = new ValExpr( Op.concat( _name, t1.name) );
+        actual = new Select( expr )
+                .from( t1.as( "t1" ) ).formatted();
+        check(message, expected0003, actual);
     }
     
     void check(String message, String expected, String actual){

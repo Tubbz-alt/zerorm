@@ -19,6 +19,10 @@ public class Case extends Primary<Case> {
     private Formattable tClause;
     private Formattable eClause;
     
+    public Case(Expr caseExpression, Formattable thenClause){
+        this(caseExpression, thenClause, null);
+    }
+    
     public Case(Expr caseExpression, Formattable thenClause, Formattable elseClause){
         this.expression = caseExpression;
         this.tClause = thenClause;
@@ -36,7 +40,9 @@ public class Case extends Primary<Case> {
         StringBuilder sb = new StringBuilder();
         sb.append( "CASE WHEN ").append( expression.formatted( fmtr ) );
         sb.append( " THEN " ).append( tClause.formatted() );
-        sb.append( " ELSE " ).append( eClause.formatted() );
+        if(eClause != null){
+            sb.append( " ELSE " ).append( eClause.formatted() );
+        }
         sb.append( " END");
         return sb.toString();
     }
