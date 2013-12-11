@@ -2,13 +2,13 @@
 package org.zerorm.core;
 
 import org.zerorm.core.format.AbstractSQLFormatter;
-import org.zerorm.core.interfaces.Primary;
+import org.zerorm.core.interfaces.SimplePrimary;
 
 /**
  * A basic value. Useful for user-defined columns/rows
  * @author bvan
  */
-public class Val<T> extends Primary<Val> {
+public class Val<T> extends SimplePrimary<Val> {
     private T value;
     
     public Val(){}

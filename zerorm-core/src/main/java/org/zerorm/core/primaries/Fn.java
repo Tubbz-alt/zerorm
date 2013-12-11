@@ -13,7 +13,7 @@ import org.zerorm.core.interfaces.Primary;
  *
  * @author bvan
  */
-public class Fn extends Primary<Fn> implements MaybeHasParams {
+public class Fn extends Primary<Fn> {
     private final String function;
     private final MaybeHasAlias valueExpr;
     private final String fnFormat;

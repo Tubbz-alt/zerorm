@@ -1,9 +1,13 @@
 
 package org.zerorm.core.primaries;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.zerorm.core.Expr;
+import org.zerorm.core.Param;
 import org.zerorm.core.format.AbstractSQLFormatter;
 import org.zerorm.core.interfaces.Formattable;
+import org.zerorm.core.interfaces.MaybeHasParams;
 import org.zerorm.core.interfaces.Primary;
 
 /**
@@ -35,5 +39,16 @@ public class Case extends Primary<Case> {
         sb.append( " ELSE " ).append( eClause.formatted() );
         sb.append( " END");
         return sb.toString();
+    }
+
+    @Override
+    public List<Param> getParams(){
+        ArrayList<Param> params = new ArrayList<>();
+        params.addAll( expression.getParams() );
+        if(tClause instanceof MaybeHasParams)
+            params.addAll( ((MaybeHasParams) tClause).getParams() );
+        if(eClause instanceof MaybeHasParams)
+            params.addAll( ((MaybeHasParams) eClause).getParams() );
+        return params;
     }
 }

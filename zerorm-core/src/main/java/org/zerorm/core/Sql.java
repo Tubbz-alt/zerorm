@@ -2,13 +2,13 @@
 package org.zerorm.core;
 
 import org.zerorm.core.format.AbstractSQLFormatter;
-import org.zerorm.core.interfaces.Primary;
+import org.zerorm.core.interfaces.SimplePrimary;
 
 /**
  * Raw SQL. Useful for anything that's not coded in (database specific code)
  * @author bvan
  */
-public class Sql extends Primary<Sql> {
+public class Sql extends SimplePrimary<Sql> {
     private String sql;
     
     public Sql(){}

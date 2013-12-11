@@ -6,7 +6,7 @@ import org.zerorm.core.Expr.SafeList;
 import org.zerorm.core.format.AbstractSQLFormatter;
 import org.zerorm.core.interfaces.MaybeHasAlias;
 import org.zerorm.core.interfaces.MaybeHasParams;
-import org.zerorm.core.interfaces.Primary;
+import org.zerorm.core.interfaces.SimplePrimary;
 import org.zerorm.core.interfaces.SimpleTable;
 
 /**
@@ -14,7 +14,7 @@ import org.zerorm.core.interfaces.SimpleTable;
  * A column can belong to a table
  * @author bvan
  */
-public class Column<T> extends Primary<Column> {
+public class Column<T> extends SimplePrimary<Column> {
     private SimpleTable parent;
     private String name;
     private Class<?> javaType;
