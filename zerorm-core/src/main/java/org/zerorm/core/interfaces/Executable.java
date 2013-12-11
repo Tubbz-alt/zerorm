@@ -38,7 +38,7 @@ public abstract class Executable<T> implements Formattable, MaybeHasParams {
         }
         return stmt;
     }
-    
+        
     public void dump() {
         System.out.println(formatted());
     }

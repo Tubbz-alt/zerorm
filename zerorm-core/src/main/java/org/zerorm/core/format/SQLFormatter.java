@@ -18,7 +18,7 @@ import org.zerorm.core.Sql;
 import org.zerorm.core.Table;
 import org.zerorm.core.Update;
 import org.zerorm.core.Val;
-import org.zerorm.core.format.db.DB;
+import org.zerorm.core.format.dialect.DB;
 import org.zerorm.core.interfaces.Formattable;
 import org.zerorm.core.interfaces.MaybeHasAlias;
 import org.zerorm.core.interfaces.SimpleTable;

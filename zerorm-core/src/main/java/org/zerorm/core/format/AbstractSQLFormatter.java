@@ -15,7 +15,7 @@ import org.zerorm.core.Select;
 import org.zerorm.core.Sql;
 import org.zerorm.core.Update;
 import org.zerorm.core.Val;
-import org.zerorm.core.format.db.DB.DBType;
+import org.zerorm.core.format.dialect.DB.DBType;
 import org.zerorm.core.interfaces.MaybeHasAlias;
 
 /**
