@@ -23,25 +23,32 @@ import org.zerorm.core.interfaces.MaybeHasAlias;
  * @author bvan
  */
 public abstract class AbstractSQLFormatter {
-    private static AbstractSQLFormatter defaultFormatter;
-    
+    private static DBType defaultType = DBType.MYSQL;
+    private static boolean defaultDebugParams = false;
+    private boolean debugParams = false;
+
     public static AbstractSQLFormatter getDefault(){
-        if(defaultFormatter == null){
-            defaultFormatter = setDefault(DBType.MYSQL);
-        }
-        return defaultFormatter;
+        SQLFormatter fmtr = new SQLFormatter(defaultType.getInstance());
+        fmtr.setDebugParams( defaultDebugParams );
+        return fmtr;
     }
     
-    public static AbstractSQLFormatter setDefault(DBType dbType){
-        defaultFormatter = new SQLFormatter(dbType.getInstance());
-        return defaultFormatter;
+    public static void setDefault(DBType dbType){
+        defaultType = dbType;
     }
 
-    public static AbstractSQLFormatter setDefault(String dbType){
-        return setDefault(DBType.valueOf( dbType.toUpperCase() ));
+    public static void setDefault(String dbType){
+        setDefault(DBType.valueOf( dbType.toUpperCase() ));
+    }
+    
+    public static boolean getDefaultDebugParams(){
+        return defaultDebugParams;
+    }
+    
+    public static void setDefaultDebugParams(boolean debug){
+        defaultDebugParams = debug;
     }
 
-    boolean debugParams = false;
     public boolean getDebugParams(){
         return this.debugParams;
     }

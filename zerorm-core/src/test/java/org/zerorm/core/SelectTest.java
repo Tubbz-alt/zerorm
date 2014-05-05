@@ -8,6 +8,7 @@ import junit.framework.TestCase;
 import org.zerorm.core.format.PrettyFormatter;
 import org.zerorm.core.model.Table0001;
 import org.zerorm.core.model.Table0001x;
+import org.zerorm.core.model.Table0002;
 
 /**
  *
@@ -50,10 +51,22 @@ public class SelectTest extends TestCase {
         check(msg, expected0003, actual);
         
         PrettyFormatter formatter = new PrettyFormatter();
-        System.out.println( formatter.format( actual ));
+        //System.out.println( formatter.format( actual ));
     }
     
     void check(String message, String expected, String actual){
         assertTrue(String.format( message, expected, actual), expected.equals( actual));
+    }
+    
+    public void testSelectParams(){
+        String msg = "Error when having a sub-select with parameters as a column";
+        String expected0001 = "SELECT Table0002.table0001_pk, ( SELECT Table0001.pk FROM Table0001 WHERE Table0001.name = ? ) FROM Table0002";
+        Table0001 t1 = new Table0001();
+        Select sel0001 = t1
+                .select(t1.pk)
+                .where( t1.name.eq(t1.name.checkedParam( "name","foo")) );
+        Table0002 t2 = new Table0002();
+        String actual = t2.select(t2.table0001_pk, sel0001).formatted();
+        check(msg, expected0001, actual);
     }
 }

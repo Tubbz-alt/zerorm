@@ -129,16 +129,10 @@ public enum Op {
     }
 
     public static Expr exists(Object val1) {
-        if (val1 instanceof Select) {
-            ((Select) val1).setWrapped(true);
-        }
         return new Expr(null, Op.EXISTS, val1);
     }
 
     public static Expr not_exists(Object val1) {
-        if (val1 instanceof Select) {
-            ((Select) val1).setWrapped(true);
-        }
         return new Expr(null, Op.NOT_EXISTS, val1);
     }
 
@@ -150,17 +144,11 @@ public enum Op {
         return new Expr(from, Op.NOT_BETWEEN, val1, val2);
     }
 
-    public static Expr in(Object from, Object val1) {
-        if (val1 instanceof Select) {
-            ((Select) val1).setWrapped(true);
-        }
+    public static Expr in(Object from, Object val1) {        
         return new Expr(from, Op.IN, val1);
     }
 
     public static Expr not_in(Object from, Object val1) {
-        if (val1 instanceof Select) {
-            ((Select) val1).setWrapped(true);
-        }
         return new Expr(from, Op.NOT_IN, val1);
     }
 
@@ -191,7 +179,7 @@ public enum Op {
     public static Expr concat(Object term1, Object term2) {
         return new Expr(term1, Op.CONCAT, term2);
     }
-    
+        
     /**
      * Magic function to turn a string into a column.
      * Use wisely

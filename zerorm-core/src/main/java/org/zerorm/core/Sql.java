@@ -24,6 +24,6 @@ public class Sql extends SimplePrimary<Sql> {
     
     @Override
     public String formatted(AbstractSQLFormatter fmtr){
-        return sql;
+        return getName();
     }
 }

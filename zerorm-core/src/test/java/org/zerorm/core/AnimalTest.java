@@ -64,7 +64,8 @@ public class AnimalTest
      * Rigourous Expr :-)
      */
     public void testApp(){
-        AbstractSQLFormatter.setDefault( "Oracle" ).setDebugParams( true );
+        AbstractSQLFormatter.setDefault( "Oracle" );
+        
         AnimalInstance p = new AnimalInstance();
         Param<Long> pidPar = p.parent.checkedParam( "mother");
         pidPar.setValue( 1234L );

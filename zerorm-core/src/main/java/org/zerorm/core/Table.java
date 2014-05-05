@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 import org.zerorm.core.format.AbstractSQLFormatter;
 import org.zerorm.core.interfaces.MaybeHasAlias;
 import org.zerorm.core.interfaces.Schema;
@@ -26,7 +25,7 @@ import org.zerorm.core.interfaces.SimpleTable;
 public class Table implements SimpleTable<Table> {
     private String table;
     private String alias = "";
-
+    
     // Column cache/list of columns defined for this table
     private Map<String,Column> columns = new LinkedHashMap<String,Column>(){
         // Override so columns returns the value just inserted
@@ -36,16 +35,52 @@ public class Table implements SimpleTable<Table> {
             return value;
         }
     };
+    
+    public static class CTE extends Table {
+        private Select definition;
+
+        public CTE(){
+            super();
+        }
+
+        public CTE(String table){
+            super(table);
+        }
+
+        public CTE(String table, String alias){
+            super( table, alias );
+        }
+        
+        public void setExpression(Select stmt){
+            stmt.setWrapped( true );
+            this.definition = stmt;
+        }
+        
+        public Select getExpression(){
+            return this.definition;
+        }
+        
+        @Override
+        public List<Column> getColumns(){
+            List<Column> derived = new ArrayList<>();
+            List<? extends MaybeHasAlias> columns = 
+                    super.getColumns().isEmpty() ? definition.getColumns() : super.getColumns();
+            for(MaybeHasAlias alias: columns){
+                derived.add( new Column(alias.canonical(), this));
+            }
+            return derived;
+        }
+    }
 
     public Table() {
         Schema tableInfo = getClass().getAnnotation( Schema.class );
-        if(tableInfo != null){
+        if(tableInfo != null && !( tableInfo.name().isEmpty() && tableInfo.alias().isEmpty())){
             this.table = tableInfo.name();
             this.alias = tableInfo.alias();
         } else {
             this.table = getClass().getSimpleName();
         }
-        initAnnotatedColumns();
+        columns.putAll(getSchemaColumns( getClass(), this ));
     }
     
     public Table(String table){
@@ -85,18 +120,24 @@ public class Table implements SimpleTable<Table> {
     public Column $(String column) {
         return getColumn(column);
     }
-
+    
     /**
-     * @return unique columns that have been defined
+     * Convenience function to adopt a column
+     * @param column Name of Column
+     * @return 
      */
-    public List<Column> columns() {
-        List<Column> cols = new ArrayList<>();
-        for(Column c: columns.values()){
-            if(!cols.contains( c )){
-                cols.add( c );
-            }
+    public Column $(MaybeHasAlias column) {
+        return getColumn(column.canonical());
+    }
+    
+    /**
+     * returns a column / new column
+     * @return 
+     */
+    public void addAllColumns(List<? extends MaybeHasAlias> columns) {
+        for(MaybeHasAlias item: columns){
+            getColumn(item.canonical());
         }
-        return cols;
     }
 
     /**
@@ -105,7 +146,13 @@ public class Table implements SimpleTable<Table> {
      */
     @Override
     public List<Column> getColumns() {
-        return columns();
+        List<Column> cols = new ArrayList<>();
+        for(Column c: columns.values()){
+            if(!cols.contains( c )){
+                cols.add( c );
+            }
+        }
+        return cols;
     }
     
     /**
@@ -121,7 +168,7 @@ public class Table implements SimpleTable<Table> {
      * @return new Select statement with all columns selected.
      */
     public Select selectAllColumns(){
-        return select().selection( columns() );
+        return select().selection( getColumns() );
     }
 
     /**
@@ -139,7 +186,7 @@ public class Table implements SimpleTable<Table> {
      * @return new Select statement
      */
     public Select where(Expr... exprs){
-        return new Select( columns() ).from( this ).where( exprs );
+        return new Select( getColumns() ).from( this ).where( exprs );
     }
     
     @Override
@@ -180,15 +227,17 @@ public class Table implements SimpleTable<Table> {
     }
     
     // Initiate annotated Columns
-    private void initAnnotatedColumns() {
+    public static Map<String, Column> getSchemaColumns(Class<?> clazz, SimpleTable table) {
+        Map<String, Column> schemaColumns = new LinkedHashMap<>();
         // Initiate Columns for this class and all parents that are of type Table
-        for(Class<?> clazz = getClass(); Table.class.isAssignableFrom( clazz ); 
-                clazz = clazz.getSuperclass()){
-            initAC(clazz);
+        for(;Table.class.isAssignableFrom( clazz ); clazz = clazz.getSuperclass()){
+            schemaColumns.putAll(getClassSchemaColumns(clazz, table));
         }
+        return schemaColumns;
     }
     
-    private void initAC(Class<?> clazz){
+    private static Map<String, Column> getClassSchemaColumns(Class<?> clazz, SimpleTable table){
+        Map<String, Column> schemaColumns = new LinkedHashMap<>();
         for(Field field: clazz.getDeclaredFields()){
             if(field.getAnnotation( Schema.class ) == null){
                 continue;
@@ -211,15 +260,16 @@ public class Table implements SimpleTable<Table> {
                     }
                 }
                 Column c = schemaColumn.alias().isEmpty() ? 
-                        new Column(name, type, this) : 
-                        new Column(name, type, this, schemaColumn.alias());
+                        new Column(name, type, table) : 
+                        new Column(name, type, table, schemaColumn.alias());
                 field.setAccessible( true );
-                field.set( this, c );
+                field.set(table, c );
                 field.setAccessible( false );
-                columns.put(c.canonical(), c);
-            } catch(Exception ex) {
-                Logger.getLogger( Table.class.getName() ).warning("Unable to bind Column " + name);
+                schemaColumns.put(c.canonical(), c);
+            } catch(IllegalAccessException | IllegalArgumentException | SecurityException ex) {
+                throw new RuntimeException("Unable to bind Column " + name, ex);
             }
         }
+        return schemaColumns;
     }
 }

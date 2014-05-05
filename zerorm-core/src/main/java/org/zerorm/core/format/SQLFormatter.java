@@ -14,8 +14,8 @@ import org.zerorm.core.Op;
 import org.zerorm.core.Param;
 import org.zerorm.core.Select;
 import org.zerorm.core.Select.JoinExpr;
-import org.zerorm.core.Sql;
 import org.zerorm.core.Table;
+import org.zerorm.core.Table.CTE;
 import org.zerorm.core.Update;
 import org.zerorm.core.Val;
 import org.zerorm.core.format.dialect.DB;
@@ -79,6 +79,19 @@ public class SQLFormatter extends AbstractSQLFormatter {
     @Override
     public String format(Select stmt){
         StringBuilder sql = new StringBuilder();
+        if(stmt.getWiths().size() > 0){
+            sql.append( "WITH ");
+            for(Iterator<CTE> iter = stmt.getWiths().iterator(); iter.hasNext(); ){
+                CTE cte = iter.next();
+                sql.append(cte.getTable()).append( " (");
+                for(Iterator<Column> i2 = cte.getColumns().iterator(); i2.hasNext();){
+                    sql.append( i2.next().canonical() ).append( i2.hasNext() ? ", ":")");
+                }
+                sql.append( " AS ").append( cte.getExpression().formatted( this ) );
+                sql.append( iter.hasNext() ? ", ":" " );
+            }
+        }
+        
         sql.append( formatColumns( stmt.getSelections() ,"SELECT", true) );
         sql.append( "FROM " );
         sql.append( aliased( stmt.getFrom().formatted(this), stmt.getFrom()) );
@@ -209,6 +222,7 @@ public class SQLFormatter extends AbstractSQLFormatter {
     }
     
 
+    @Override
     public String format(Expr expr){
         StringBuilder s = new StringBuilder();
         if(expr.isEmpty()){ return s.toString(); }
@@ -220,25 +234,19 @@ public class SQLFormatter extends AbstractSQLFormatter {
     }
     
     private String formatExprForSqlString(Object token){
-        if(token == null){
-            return "";
-        }
+        if(token == null){ return ""; }
         if(token instanceof Op){ return " " + token.toString() + " "; }
         return formatAsSafeString(token);
     }
     
     @Override
     public String formatAsSafeString(Object value){
-        if(value instanceof Expr){
-            return format((Expr) value) ;
-        } else if(value instanceof Column){
-            return format((Column) value ) ;
-        } else if(value instanceof Formattable){
+        if(value instanceof Select){ ((Select) value).setWrapped( true ); }
+        
+        if(value instanceof Formattable){
             return ((Formattable) value).formatted(this);
         } else if(value instanceof String){
             return "'" + value + "'" ;
-        } else if(value instanceof Sql){
-            return value.toString();
         } else if(value instanceof java.util.Date){
             return getDateAsSQLString((java.util.Date) value);
         }

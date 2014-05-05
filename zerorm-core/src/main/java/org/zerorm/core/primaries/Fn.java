@@ -27,7 +27,7 @@ public class Fn extends Primary<Fn> {
     public static final Fn ANY = new Fn( "ANY" );
     public static final Fn SOME = new Fn( "SOME" );
     public static final Fn COUNT = new Fn( "COUNT" );
-    public static final Fn DISTINCT = new Fn( "DISTINCT", "%s %s" );
+    public static final Fn DISTINCT = new Fn( "DISTINCT", "%1$s %2$s" );
     
     private Fn(String function){
         this.fnFormat = FN_DEFAULT_FMT;

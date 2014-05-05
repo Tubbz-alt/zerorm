@@ -21,7 +21,7 @@ import org.zerorm.core.interfaces.SimpleTable;
  * derived table.
  * @author bvan
  */
-public class Select extends Executable implements SimpleTable<Select> {    
+public class Select extends Executable<Select> implements SimpleTable<Select> {    
     
     protected class Scope {
         private LinkedHashMap<MaybeHasAlias, MaybeHasAlias> exportedMapping;
@@ -57,16 +57,18 @@ public class Select extends Executable implements SimpleTable<Select> {
         
     };
     
-    protected static class Union extends Select {
-        List<Select> unions = new ArrayList<>();
+    public static class CompoundSelect extends Select {
+        List<Select> selects = new ArrayList<>();
+        String keyword;
 
-        protected Union(Select... selects){
-            unions.addAll( Arrays.asList( selects) );
+        protected CompoundSelect(String keyword, Select... selects){
+            this.keyword = keyword;
+            this.selects.addAll( Arrays.asList( selects) );
         }
         
         @Override
         public boolean hasParams(){
-            for(Select s: unions){
+            for(Select s: selects){
                 if(s.hasParams())
                     return true;
             }
@@ -75,7 +77,7 @@ public class Select extends Executable implements SimpleTable<Select> {
         
         @Override
         public Select where(Expr... exprs){
-            for(Select sel: unions){
+            for(Select sel: selects){
                 sel.where(exprs);
             }
             return this;
@@ -84,7 +86,7 @@ public class Select extends Executable implements SimpleTable<Select> {
         @Override
         public List<Param> getParams(){
             List<Param> list = new ArrayList<>();
-            for(Select s: unions){
+            for(Select s: selects){
                 list.addAll( s.getParams() );
             }
             return list;
@@ -93,7 +95,7 @@ public class Select extends Executable implements SimpleTable<Select> {
         @Override
         public List<MaybeHasAlias> getColumns(){
             LinkedHashMap<String, MaybeHasAlias> mapList = new LinkedHashMap<>();
-            for(Select s: unions){
+            for(Select s: selects){
                 if(mapList.isEmpty()){
                     for(MaybeHasAlias alias: s.getColumns()){
                         mapList.put( alias.canonical(), new Column(alias.canonical(), this));
@@ -111,17 +113,17 @@ public class Select extends Executable implements SimpleTable<Select> {
         @Override
         public String formatted(AbstractSQLFormatter fmtr){
             StringBuilder sql = new StringBuilder();
-            for(Iterator<Select> itr = unions.iterator(); itr.hasNext();){
+            for(Iterator<Select> itr = selects.iterator(); itr.hasNext();){
                 Select s = itr.next();
                 sql.append( s.formatted( fmtr ) );
                 if(itr.hasNext()){
-                    sql.append( " UNION ALL ");
+                    sql.append(" ").append(keyword).append(" ");
                 }
             }
             return getWrapped() ? "(" + sql.toString() + " )" : sql.toString();
         }
     }
-
+    
     //  The enum will hold a Expr for use when constructing JOIN statements
     enum Join {
         JOIN("JOIN"),
@@ -180,7 +182,7 @@ public class Select extends Executable implements SimpleTable<Select> {
         return checkSelections( Arrays.asList( columns ) );
     }
     
-    public Select selection( List<? extends MaybeHasAlias> columns ) {
+    public Select selection( Collection<? extends MaybeHasAlias> columns ) {
         return checkSelections( columns );
     }
     
@@ -365,8 +367,12 @@ public class Select extends Executable implements SimpleTable<Select> {
         return this.orderBys;
     }
     
+    public static Select union(Select... selects){
+        return new CompoundSelect("UNION", selects);
+    }
+    
     public static Select unionAll(Select... selects){
-        return new Union(selects);
+        return new CompoundSelect("UNION ALL", selects);
     }
 
     public void setWrapped(boolean wrapped) {
@@ -385,6 +391,18 @@ public class Select extends Executable implements SimpleTable<Select> {
     @Override
     public List<Param> getParams() {
         List<Param> params = new ArrayList<>();
+        
+        for(MaybeHasAlias sel: getWiths()){
+            if(sel instanceof MaybeHasParams){
+                params.addAll( ((MaybeHasParams) sel).getParams());
+            }
+        }
+        
+        for(MaybeHasAlias sel: getSelections()){
+            if(sel instanceof MaybeHasParams){
+                params.addAll( ((MaybeHasParams) sel).getParams());
+            }
+        }
 
         if (from instanceof MaybeHasParams) {
             params.addAll( ((MaybeHasParams) from).getParams() );
@@ -450,17 +468,20 @@ public class Select extends Executable implements SimpleTable<Select> {
     
     private Column checkColumn(MaybeHasAlias c){
         if(c instanceof SimpleTable){
-            return null;
-        } else {
-            Column neue = new Column( c.canonical(), this );
-            for(MaybeHasAlias colx: scope.exportedMapping.keySet()){
-                if(colx.canonical().equals( c.canonical())){
-                    return colx instanceof Column ? (Column) colx : neue;
-                }
+            if(c instanceof Select){
+                ((Select) c).setWrapped( true );
+            } else if(c instanceof Table){
+                throw new RuntimeException("Unable to select table as a column");
             }
-            scope.exportedMapping.put( neue, c );
-            return neue;
         }
+        Column neue = new Column( c.canonical(), this );
+        for(MaybeHasAlias colx: scope.exportedMapping.keySet()){
+            if(colx.canonical().equals( c.canonical())){
+                return colx instanceof Column ? (Column) colx : neue;
+            }
+        }
+        scope.exportedMapping.put( neue, c );
+        return neue;
     }
 
     private boolean allTablesPresent(Object c){

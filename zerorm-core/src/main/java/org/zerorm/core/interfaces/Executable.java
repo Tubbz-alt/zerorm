@@ -4,8 +4,11 @@ package org.zerorm.core.interfaces;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import org.zerorm.core.Param;
+import org.zerorm.core.Table.CTE;
 import org.zerorm.core.format.AbstractSQLFormatter;
 
 /**
@@ -13,6 +16,7 @@ import org.zerorm.core.format.AbstractSQLFormatter;
  * @author bvan
  */
 public abstract class Executable<T> implements Formattable, MaybeHasParams {
+    private List<CTE> ctes = new ArrayList<>();
 
     public PreparedStatement prepare(Connection conn) throws SQLException {
         String sql = formatted();
@@ -38,7 +42,16 @@ public abstract class Executable<T> implements Formattable, MaybeHasParams {
         }
         return stmt;
     }
-        
+    
+    public T with(CTE commonTableExpression){
+        this.ctes.add( commonTableExpression );
+        return (T) this;
+    }
+    
+    public List<CTE> getWiths(){
+        return ctes;
+    }
+    
     public void dump() {
         System.out.println(formatted());
     }
