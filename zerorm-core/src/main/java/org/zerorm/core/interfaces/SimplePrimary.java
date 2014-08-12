@@ -55,7 +55,7 @@ public abstract class SimplePrimary<U extends SimplePrimary> implements MaybeHas
 
     @Override
     public String canonical(){
-        return !alias.isEmpty() ? alias : getName();
+        return !alias().isEmpty() ? alias() : getName();
     }
 
     @Override
