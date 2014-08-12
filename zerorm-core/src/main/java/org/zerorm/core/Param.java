@@ -110,12 +110,11 @@ public class Param<T> implements Formattable {
     public T parse(String value){
         return str2val(parse, value);
     }
-    
-    public void setName(String name){
-        this.name = name;
-    }
 
     public void setValue(T value) {
+        if(value == null){
+            return;
+        }
         Class<?> clz = value.getClass();
         if( valueClass != null && !valueClass.isAssignableFrom( clz ) && !clz.equals(valueClass) ){
             throw new RuntimeException("Unable to set Parameter value: " + value.toString() + 

@@ -196,7 +196,7 @@ public enum Op {
      * @return 
      */
     public static Column $(Column column){
-        return new Column(column.canonical(), null);
+        return new Column(column, null);
     }
     
     /**

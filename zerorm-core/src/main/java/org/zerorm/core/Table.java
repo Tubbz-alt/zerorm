@@ -107,36 +107,55 @@ public class Table implements SimpleTable<Table> {
      * @return 
      */
     public Column getColumn(String column) {
+        return columns.get(column);
+    }
+    
+    /**
+     * returns a column or merges a new column
+     * @param column Name of Column
+     * @return 
+     */
+    public Column mergeColumn(String column) {
         return columns.containsKey(column)
                 ? columns.get(column)
                 : columns.put(column, new Column(column, this));
     }
     
+    public Column mergeColumn(MaybeHasAlias column) {
+        return columns.containsKey(column.canonical())
+                ? columns.get(column.canonical())
+                : columns.put(column.canonical(), new Column(column, this));
+    }
+    
     /**
-     * Shortened/Convenience function for getColumn
+     * Shortened/Convenience function for mergeColumn
      * @param column Name of Column
      * @return 
      */
     public Column $(String column) {
-        return getColumn(column);
+        return mergeColumn(column);
+    }
+    
+    public Column $(String column, Class<?> javaType) {
+        return mergeColumn(new Column(column, javaType, this));
     }
     
     /**
-     * Convenience function to adopt a column
+     * Convenience function to adopt and merge a column
      * @param column Name of Column
      * @return 
      */
     public Column $(MaybeHasAlias column) {
-        return getColumn(column.canonical());
+        return mergeColumn(column);
     }
     
     /**
-     * returns a column / new column
+     * Merges columns from the collection
      * @return 
      */
     public void addAllColumns(List<? extends MaybeHasAlias> columns) {
         for(MaybeHasAlias item: columns){
-            getColumn(item.canonical());
+            mergeColumn(item);
         }
     }
 
@@ -262,9 +281,11 @@ public class Table implements SimpleTable<Table> {
                 Column c = schemaColumn.alias().isEmpty() ? 
                         new Column(name, type, table) : 
                         new Column(name, type, table, schemaColumn.alias());
-                field.setAccessible( true );
-                field.set(table, c );
-                field.setAccessible( false );
+                if(table.getClass() == clazz){
+                    field.setAccessible( true );
+                    field.set(table, c );   
+                    field.setAccessible( false );
+                }
                 schemaColumns.put(c.canonical(), c);
             } catch(IllegalAccessException | IllegalArgumentException | SecurityException ex) {
                 throw new RuntimeException("Unable to bind Column " + name, ex);

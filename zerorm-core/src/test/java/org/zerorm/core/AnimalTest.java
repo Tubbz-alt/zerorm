@@ -81,8 +81,7 @@ public class AnimalTest
         assertTrue( "Got: " + s002.formatted(), s002.formatted().equals( s002_expected ) );
 
         AbstractSQLFormatter.getDefault().setDebugParams( true );
-        Param<Long> bpParam = new Param<Long>();
-        bpParam.setName( "firstparam" );
+        Param<Long> bpParam = new Param<>("firstparam");
         bpParam.setValue( new Long( 1235L ) );
     }
     

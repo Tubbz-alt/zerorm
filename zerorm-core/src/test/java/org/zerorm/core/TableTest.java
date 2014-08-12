@@ -35,10 +35,10 @@ public class TableTest extends TestCase {
         
         Table0003 t3 = new Table0003();
         cte = new CTE("T3_CTE");
-        cte.$( "pk");
-        cte.$( "parent");
-        cte.$( "name");
-        cte.$( "lev");
+        cte.$("pk");
+        cte.$("parent");
+        cte.$("name");
+        cte.$("lev");
         
         Select cte_expr = Select.unionAll( 
                 t3.selectAllColumns().selection( new Val<Integer>(1).as( "lev") ),

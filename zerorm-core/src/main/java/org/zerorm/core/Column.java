@@ -32,19 +32,27 @@ public class Column<T> extends SimplePrimary<Column> {
      * Construct a column with a parent table and alias
      */
     public Column(String name, SimpleTable parent, String alias){
-        this(name, Object.class, parent, alias);
+        init(name, Object.class, parent, alias);
+    }
+    
+    public Column(MaybeHasAlias orig, SimpleTable parent){
+        Class tClass = orig instanceof Column ? ((Column) orig).getJavaType() : Object.class;
+        String cname = orig instanceof SimplePrimary ? ((SimplePrimary) orig).getName() : orig.canonical();
+        init(cname, tClass, parent, orig.alias());
     }
     
     /**
      * Construct a column tied to a table. Supply a default column type (Long, String, etc..)
      */
     public Column(String name, Class<?> type, SimpleTable parent){
-        this.name = name;
-        this.parent = parent;
-        this.javaType = type;
+        init(name,type,parent,null);
     }
 
     public Column(String name, Class<?> type, SimpleTable parent, String alias){
+        init(name,type,parent,alias);
+    }
+    
+    private void init(String name, Class<?> type, SimpleTable parent, String alias){
         this.name = name;
         this.parent = parent;
         this.alias = alias;

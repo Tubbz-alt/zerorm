@@ -21,6 +21,7 @@ import org.zerorm.core.Val;
 import org.zerorm.core.format.dialect.DB;
 import org.zerorm.core.interfaces.Formattable;
 import org.zerorm.core.interfaces.MaybeHasAlias;
+import org.zerorm.core.interfaces.SimplePrimary;
 import org.zerorm.core.interfaces.SimpleTable;
 
 /**
@@ -163,7 +164,7 @@ public class SQLFormatter extends AbstractSQLFormatter {
                 continue;
             }
 
-            canonicals.add( aliased ? selection.canonical() : ((Column) selection).getName() );
+            canonicals.add( aliased ? selection.canonical() : ((SimplePrimary) selection).getName() );
             String fmt = selection instanceof Column ? format(((Column) selection) ) 
                     : selection.formatted(this);
             sql.append( aliased ? aliased(fmt, selection) : selection.formatted(this) );
@@ -245,6 +246,8 @@ public class SQLFormatter extends AbstractSQLFormatter {
         
         if(value instanceof Formattable){
             return ((Formattable) value).formatted(this);
+        } else if (value instanceof Boolean){
+            return ((Boolean) value).booleanValue() ? "1" : "0";
         } else if(value instanceof String){
             return "'" + value + "'" ;
         } else if(value instanceof java.util.Date){

@@ -13,6 +13,7 @@ import org.zerorm.core.format.AbstractSQLFormatter;
 import org.zerorm.core.interfaces.Executable;
 import org.zerorm.core.interfaces.MaybeHasAlias;
 import org.zerorm.core.interfaces.MaybeHasParams;
+import org.zerorm.core.interfaces.SimplePrimary;
 import org.zerorm.core.interfaces.SimpleTable;
 
 /**
@@ -68,7 +69,7 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
         
         @Override
         public boolean hasParams(){
-            for(Select s: selects){
+            for(Select s: getStatements()){
                 if(s.hasParams())
                     return true;
             }
@@ -77,16 +78,20 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
         
         @Override
         public Select where(Expr... exprs){
-            for(Select sel: selects){
+            for(Select sel: getStatements()){
                 sel.where(exprs);
             }
             return this;
+        }
+        
+        public List<Select> getStatements(){
+            return this.selects;
         }
 
         @Override
         public List<Param> getParams(){
             List<Param> list = new ArrayList<>();
-            for(Select s: selects){
+            for(Select s: getStatements()){
                 list.addAll( s.getParams() );
             }
             return list;
@@ -95,7 +100,7 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
         @Override
         public List<MaybeHasAlias> getColumns(){
             LinkedHashMap<String, MaybeHasAlias> mapList = new LinkedHashMap<>();
-            for(Select s: selects){
+            for(Select s: getStatements()){
                 if(mapList.isEmpty()){
                     for(MaybeHasAlias alias: s.getColumns()){
                         mapList.put( alias.canonical(), new Column(alias.canonical(), this));
@@ -113,7 +118,7 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
         @Override
         public String formatted(AbstractSQLFormatter fmtr){
             StringBuilder sql = new StringBuilder();
-            for(Iterator<Select> itr = selects.iterator(); itr.hasNext();){
+            for(Iterator<Select> itr = getStatements().iterator(); itr.hasNext();){
                 Select s = itr.next();
                 sql.append( s.formatted( fmtr ) );
                 if(itr.hasNext()){
@@ -152,7 +157,7 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
     private Expr where = new Expr();
     private List<Column> groupBys = new ArrayList<>();
     private Expr having = new Expr();
-    private List<Column> orderBys = new ArrayList<>();
+    private List<SimplePrimary> orderBys = new ArrayList<>();
 
     /**
      * Construct initial SELECT statement.
@@ -358,12 +363,12 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
         }
     }
 
-    public Select orderBy(Column... columns) {
+    public Select orderBy(SimplePrimary... columns) {
         addAllIfNotNull(orderBys, columns);
         return this;
     }
     
-    public List<? extends MaybeHasAlias> getOrderBys(){
+    public List<? extends SimplePrimary> getOrderBys(){
         return this.orderBys;
     }
     
@@ -474,7 +479,7 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
                 throw new RuntimeException("Unable to select table as a column");
             }
         }
-        Column neue = new Column( c.canonical(), this );
+        Column neue = new Column( c, this );
         for(MaybeHasAlias colx: scope.exportedMapping.keySet()){
             if(colx.canonical().equals( c.canonical())){
                 return colx instanceof Column ? (Column) colx : neue;
