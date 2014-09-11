@@ -457,8 +457,7 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
             // If columns, verify all join tables are present
             if (!allTablesPresent(o)) {
                 joinList.remove(join.with( test ));
-                throw new RuntimeException("Unable to join table: Table not present" + 
-                        ((SimpleTable) o).canonical() );
+                throw new RuntimeException("Unable to join table: Table not present");
             }
         }
         return this;
@@ -501,11 +500,18 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
     private List<String> getAllTableNames() {
         ArrayList<String> tables = new ArrayList<>();
 
-        tables.add(!from.alias().isEmpty() ? from.alias() : ((Table) from).getTable() );
+        tables.add(!from.alias().isEmpty() ? from.alias() : checkIsTable(from) );
 
         for (SimpleTable e : joinList.values()) {
-            tables.add( !e.alias().isEmpty() ? e.alias() : ((Table) e).getTable() );
+            tables.add( !e.alias().isEmpty() ? e.alias() : checkIsTable(e) );
         }
         return tables;
+    }
+    
+    private String checkIsTable(SimpleTable tab){
+        if(tab instanceof Table){
+            return ((Table) tab).getTable();
+        }
+        throw new RuntimeException("Select statement needs an alias: " + tab.canonical());
     }
 }
