@@ -281,7 +281,7 @@ public class Table implements SimpleTable<Table> {
                 Column c = schemaColumn.alias().isEmpty() ? 
                         new Column(name, type, table) : 
                         new Column(name, type, table, schemaColumn.alias());
-                if(table.getClass() == clazz){
+                if(clazz.isAssignableFrom(table.getClass())){
                     field.setAccessible( true );
                     field.set(table, c );   
                     field.setAccessible( false );
