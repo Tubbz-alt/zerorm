@@ -145,7 +145,7 @@ public class SQLFormatter extends AbstractSQLFormatter {
     }
     
     private String formatColumns(Collection<? extends MaybeHasAlias> cols, String clause, 
-            boolean aliased){
+             boolean aliased){
         if(cols.isEmpty()){ return ""; }
         ArrayList<String> canonicals = new ArrayList<>();
         StringBuilder sql = new StringBuilder();
@@ -153,7 +153,7 @@ public class SQLFormatter extends AbstractSQLFormatter {
         for(Iterator<? extends MaybeHasAlias> i1 = cols.iterator(); i1.hasNext();){
             MaybeHasAlias selection = i1.next();
             // Make sure we're not adding redundant columns (in the case of some blind joins)
-            if(canonicals.contains( selection.canonical() )){
+            if(aliased && canonicals.contains( selection.canonical() )){
                 if(!i1.hasNext()){
                     int commaIndex = sql.length() - 2;
                     // Handle the case that the redundant canonical is at the end of the list

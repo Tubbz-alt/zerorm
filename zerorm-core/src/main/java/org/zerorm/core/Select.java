@@ -58,6 +58,26 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
         
     };
     
+    public static class OrderByExpr extends SimplePrimary<OrderByExpr> {
+        private SimplePrimary orderBy;
+        private String order;
+
+        public OrderByExpr(SimplePrimary orderBy, String order){
+            this.orderBy = orderBy;
+            this.order = order;
+        }
+
+        @Override
+        public String getName(){
+            return orderBy.getName();
+        }
+
+        @Override
+        public String formatted(AbstractSQLFormatter fmtr) {
+            return orderBy.formatted() + ( order != null && !order.isEmpty() ? " " + order : "");
+        }
+    }
+    
     public static class CompoundSelect extends Select {
         List<Select> selects = new ArrayList<>();
         String keyword;
@@ -362,9 +382,21 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
             list.addAll(Arrays.asList(objects));
         }
     }
+    
+    public Select orderBy(SimplePrimary column, String order) {
+        orderBys.add( new OrderByExpr(column, order));
+        return this;
+    }
 
     public Select orderBy(SimplePrimary... columns) {
         addAllIfNotNull(orderBys, columns);
+        return this;
+    }
+    
+    public Select orderByDesc(SimplePrimary... columns) {
+        for(SimplePrimary p: columns){
+            orderBy( p, "DESC" );
+        }
         return this;
     }
     
