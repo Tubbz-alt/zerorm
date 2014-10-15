@@ -15,6 +15,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     </properties>
 
+    <scm>
+        <url>https://github.com/zerorm/zerorm</url>
+        <connection>scm:git:git://github.com/zerorm/zerorm.git</connection>
+        <developerConnection>scm:git:git@github.com:zerorm/zerorm.git</developerConnection>
+    </scm>
+
     <dependencies>
         <dependency>
             <groupId>junit</groupId>
@@ -23,12 +29,13 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
+    
     <build>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
-                <version>2.3.2</version>
+                <version>2.5.1</version>
                 <configuration>
                     <source>1.7</source>
                     <target>1.7</target>
