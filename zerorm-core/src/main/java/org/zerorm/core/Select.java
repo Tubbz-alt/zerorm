@@ -73,6 +73,11 @@ public class Select extends Executable<Select> implements SimpleTable<Select> {
         }
 
         @Override
+        public String alias(){
+            return orderBy.alias();
+        }
+
+        @Override
         public String formatted(AbstractSQLFormatter fmtr) {
             return orderBy.formatted() + ( order != null && !order.isEmpty() ? " " + order : "");
         }
