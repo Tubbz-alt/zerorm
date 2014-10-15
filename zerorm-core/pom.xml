@@ -18,7 +18,7 @@
     <scm>
         <url>https://github.com/zerorm/zerorm</url>
         <connection>scm:git:git://github.com/zerorm/zerorm.git</connection>
-        <developerConnection>scm:git:git://github.com/zerorm/zerorm.git</developerConnection>
+        <developerConnection>scm:git:https://github.com/zerorm/zerorm.git</developerConnection>
     </scm>
 
     <dependencies>
