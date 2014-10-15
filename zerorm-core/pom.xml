@@ -1,9 +1,10 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.zerorm</groupId>
     <artifactId>zerorm-core</artifactId>
-    <version>0.1</version>
+    <version>0.1-SNAPSHOT</version>
 
 
     <name>ZeroRM SQL Composition Library</name>
@@ -18,8 +19,7 @@
         <url>https://github.com/zerorm/zerorm</url>
         <connection>scm:git:git://github.com/zerorm/zerorm.git</connection>
         <developerConnection>scm:git:https://github.com/zerorm/zerorm.git</developerConnection>
-      <tag>zerorm-core-0.1</tag>
-  </scm>
+    </scm>
 
     <dependencies>
         <dependency>
