@@ -14,5 +14,10 @@ public class Postgres implements DB {
         SimpleDateFormat sdf = new SimpleDateFormat( "yyyyMMddHHmmss.SSS" );
         return "to_timestamp('" + sdf.format( date ) + "', 'YYYYMMDDHH24MISS.MS')";
     }
+    
+    @Override
+    public String getLikeEscape(){
+        return "\\";
+    }
 
 }

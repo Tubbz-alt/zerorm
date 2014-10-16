@@ -22,6 +22,9 @@ public interface DB {
             return db;
         }
     }
+    
+    public String getLikeEscape();
+    
     public String toTimestamp(java.util.Date date);
 
 }

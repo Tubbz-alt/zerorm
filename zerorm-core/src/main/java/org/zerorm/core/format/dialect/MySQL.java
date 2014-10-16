@@ -15,4 +15,10 @@ public class MySQL implements DB {
         return sdf.format( date );
     }
     
+
+    @Override
+    public String getLikeEscape(){
+        return "\\";
+    }
+    
 }

@@ -230,6 +230,10 @@ public class SQLFormatter extends AbstractSQLFormatter {
         s.append( formatExprForSqlString( expr.getLeft() ));
         s.append( formatExprForSqlString( expr.getOp()));
         s.append( formatExprForSqlString( expr.getRight() ));
+        if((expr.getOp() == Op.LIKE || expr.getOp() == Op.NOT_LIKE )
+                && dbImpl.getLikeEscape() != null){
+            s.append(" ESCAPE '" + dbImpl.getLikeEscape() + "'");
+        }
         
         return expr.isWrapped() ? "( " + s.toString() + " )" : s.toString();
     }

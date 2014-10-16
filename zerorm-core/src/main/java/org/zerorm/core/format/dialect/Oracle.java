@@ -15,4 +15,8 @@ public class Oracle implements DB {
         return "to_timestamp('" + sdf.format( date ) + "', 'YYYYMMDDHH24MISS.FF')";
     }
 
+    @Override
+    public String getLikeEscape(){
+        return "\\";
+    }
 }
