@@ -46,6 +46,7 @@ public enum Op {
     EXISTS("EXISTS"), 
     NOT_EXISTS("NOT EXISTS"),
     LIKE("LIKE"),
+    NOT_LIKE("NOT LIKE"),
     PLUS("+"),
     MINUS("-"),
     DIVIDED("/"),
