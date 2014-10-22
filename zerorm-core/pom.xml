@@ -3,7 +3,7 @@
 
     <groupId>org.zerorm</groupId>
     <artifactId>zerorm-core</artifactId>
-    <version>0.2-SNAPSHOT</version>
+    <version>0.3-SNAPSHOT</version>
 
 
     <name>ZeroRM SQL Composition Library</name>
