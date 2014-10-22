@@ -3,7 +3,7 @@
 
     <groupId>org.zerorm</groupId>
     <artifactId>zerorm-core</artifactId>
-    <version>0.2</version>
+    <version>0.3-SNAPSHOT</version>
 
 
     <name>ZeroRM SQL Composition Library</name>
@@ -19,7 +19,7 @@
         <url>https://github.com/zerorm/zerorm</url>
         <connection>scm:git:git://github.com/zerorm/zerorm.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/zerorm/zerorm.git</developerConnection>
-        <tag>zerorm-core-0.2</tag>
+        <tag>HEAD</tag>
     </scm>
     
     <repositories>
