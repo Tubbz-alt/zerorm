@@ -1,4 +1,4 @@
-cd<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.zerorm</groupId>
@@ -18,6 +18,7 @@ cd<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.or
         <url>https://github.com/zerorm/zerorm</url>
         <connection>scm:git:git://github.com/zerorm/zerorm.git</connection>
         <developerConnection>scm:git:https://github.com/zerorm/zerorm.git</developerConnection>
+        <tag>HEAD</tag>
   </scm>
 
     <dependencies>
