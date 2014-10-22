@@ -42,6 +42,11 @@
             <url>http://srs.slac.stanford.edu/nexus/content/repositories/srs-maven2-snapshot/</url>
         </snapshotRepository>
     </distributionManagement>
+    
+    <ciManagement>
+        <system>hudson</system>
+        <url>http://srs.slac.stanford.edu/hudson/job/org-zerorm-core</url>
+    </ciManagement>
 
     <dependencies>
         <dependency>
