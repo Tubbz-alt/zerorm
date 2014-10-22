@@ -12,6 +12,7 @@
     
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <hudson.deploy.snapshot.artifact>true</hudson.deploy.snapshot.artifact>
     </properties>
 
     <scm>
@@ -19,7 +20,28 @@
         <connection>scm:git:git://github.com/zerorm/zerorm.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/zerorm/zerorm.git</developerConnection>
         <tag>HEAD</tag>
-  </scm>
+    </scm>
+    
+    <repositories>
+        <repository>
+            <id>srs-maven2-public</id>
+            <name>SRS Maven 2 central repository</name>
+            <url>http://srs.slac.stanford.edu/nexus/content/groups/srs-maven2-public/</url>
+        </repository>
+    </repositories>
+    
+    <distributionManagement>
+        <repository>
+            <id>srs-maven2</id>
+            <name>SRS Maven 2 central repository</name>
+            <url>http://srs.slac.stanford.edu/nexus/content/repositories/srs-maven2/</url>
+        </repository>
+        <snapshotRepository>
+            <id>srs-maven2-snapshots</id>
+            <name>SRS Maven2 central SNAPSHOTS repository</name>
+            <url>http://srs.slac.stanford.edu/nexus/content/repositories/srs-maven2-snapshot/</url>
+        </snapshotRepository>
+    </distributionManagement>
 
     <dependencies>
         <dependency>
