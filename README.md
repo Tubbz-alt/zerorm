@@ -1,4 +1,4 @@
-0RM (or ZeroRM)
+0RM (or ZeroRM) [![Build Status](https://travis-ci.org/slaclab/zerorm.svg?branch=master)](https://travis-ci.org/slaclab/zerorm)
 ======
 I'm sure there's plenty of things I'm doing stupidly in this. Feel free to submit pull requests.  
 
